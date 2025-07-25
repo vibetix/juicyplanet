@@ -131,6 +131,13 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-64 max-h-screen overflow-y-auto">
               <nav className="flex flex-col gap-4 mt-8">
+                {/* ✅ User info (icon + name) */}
+                {user && (
+                  <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-gray-100 rounded-md shadow-sm">
+                    <User className="w-5 h-5 text-juicy-green" />
+                    <span className="text-sm font-medium text-gray-700">{user.username}</span>
+                  </div>
+                )}
                 <Link to="/" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
                   Home
                 </Link>
