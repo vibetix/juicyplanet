@@ -77,7 +77,7 @@ const Footer = () => {
                   <MapPin className="w-4 h-4 text-juicy-green" />
                 </div>
                 <span className="text-gray-400 font-quicksand">
-                  123 Fresh Street<br />Juice City, JC 12345
+                  Tema, Golf-City, Ghana
                 </span>
               </div>
             </div>
