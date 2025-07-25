@@ -149,6 +149,10 @@ export default function Header() {
                     <Link to="/profile" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
                       Profile
                     </Link>
+                    <Link
+                      to="/order" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">                    >
+                      Order
+                    </Link>
                     <Button
                       variant="ghost"
                       className="text-left px-0 hover:text-juicy-green"
