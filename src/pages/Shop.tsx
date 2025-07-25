@@ -24,7 +24,7 @@ const Shop = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:4000/user/products');
+        const res = await fetch('https://juicy-backend.onrender.com/user/products');
         const data = await res.json();
         setProducts(data);
       } catch (err) {
