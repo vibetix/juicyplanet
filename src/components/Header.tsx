@@ -18,11 +18,8 @@ export default function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const closeTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // ✅ Get user from Redux store
   const auth = useAppSelector((state) => state.auth || { user: null, isAuthenticated: false });
-const user = auth.user;
-
-  // console.log("Logged in user:", user);
+  const user = auth.user;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -43,20 +40,20 @@ const user = auth.user;
 
   return (
     <header className="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
-      <div className="max-w-1xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-y-2">
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-juicy-yellow to-juicy-yellow-light rounded-full flex items-center justify-center shadow-lg">
             <span className="text-2xl" aria-hidden="true">🧃</span>
             <span className="sr-only">JuicyPlanet Logo</span>
           </div>
-          <Link to="/" className="text-2xl font-bold text-juicy-green">
+          <Link to="/" className="text-xl sm:text-2xl font-bold text-juicy-green">
             JuicyPlanet
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-6">
           <Link to="/shop" className="hover:text-juicy-green font-medium transition">Shop</Link>
           <Link to="/about" className="hover:text-juicy-green font-medium transition">About</Link>
           <Link to="/contact" className="hover:text-juicy-green font-medium transition">Contact</Link>
@@ -64,7 +61,7 @@ const user = auth.user;
 
         {/* Right Icons */}
         <div className="flex items-center gap-4">
-          <Link to="/cart" className="relative flex items-center">
+          <Link to="/cart" className="relative flex items-center text-sm sm:text-base">
             <ShoppingCart className="w-5 h-5 hover:text-juicy-green transition" />
             {cartCount > 0 && (
               <span className="ml-1 text-sm font-medium">{cartCount}</span>
@@ -73,7 +70,7 @@ const user = auth.user;
 
           {/* User Dropdown */}
           <div
-            className="relative"
+            className="relative hidden sm:block"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -85,7 +82,7 @@ const user = auth.user;
             </div>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white border rounded-md shadow-md z-50">
+              <div className="absolute right-0 top-full mt-1 w-40 max-w-[90vw] bg-white border rounded-md shadow-md z-50">
                 {user ? (
                   <>
                     <Link
@@ -130,9 +127,9 @@ const user = auth.user;
           {/* Mobile Menu */}
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger>
-              <Menu className="md:hidden w-6 h-6 hover:text-juicy-green" />
+              <Menu className="lg:hidden w-6 h-6 hover:text-juicy-green" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
+            <SheetContent side="right" className="w-64 max-h-screen overflow-y-auto">
               <nav className="flex flex-col gap-4 mt-8">
                 <Link to="/" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
                   Home
