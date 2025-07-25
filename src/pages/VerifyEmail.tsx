@@ -30,7 +30,7 @@ const VerifyEmail = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:4000/user/verify-email/${token}`, // 👈 token as path param
+        `https://juicy-backend.onrender.com/user/verify-email/${token}`, // 👈 token as path param
         { signal: controller.signal }
       );
 
