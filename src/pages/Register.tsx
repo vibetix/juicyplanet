@@ -45,7 +45,7 @@ const onSubmit = async (values: FormData) => {
   setLoading(true);
 
   try {
-    const res = await fetch(`http://localhost:4000/user/register`, {
+    const res = await fetch(`https://juicy-backend.onrender.com/user/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
