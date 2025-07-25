@@ -15,7 +15,7 @@ const AppLoader = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    fetch("http://localhost:4000/user/profile", {
+    fetch("https://juicy-backend.onrender.com/user/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
