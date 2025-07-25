@@ -44,7 +44,7 @@ import Report from "./admin/analytics";
 import Settings from "./admin/settings";
 import Users from "./admin/customers";
 import AddProduct from "./admin/addProduct";
-import Profile from "./admin/profile";
+import AdminProfile from "./admin/profile";
 
 const queryClient = new QueryClient();
 
