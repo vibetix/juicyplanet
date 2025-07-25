@@ -49,7 +49,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/user/product/${slug}`);
+        const res = await fetch(`https://juicy-backend.onrender.com/user/product/${slug}`);
         const data = await res.json();
         setProduct(data);
       } catch (err) {
