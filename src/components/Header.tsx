@@ -68,7 +68,7 @@ export default function Header() {
             )}
           </Link>
 
-          {/* User Dropdown */}
+          {/* User Dropdown (Desktop only) */}
           <div
             className="relative hidden sm:block"
             onMouseEnter={handleMouseEnter}
@@ -131,38 +131,38 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-64 max-h-screen overflow-y-auto">
               <nav className="flex flex-col gap-4 mt-8">
-                {/* ✅ User info (icon + name) */}
+                {/* User Info (Mobile only) */}
                 {user && (
                   <div className="flex items-center gap-2 px-4 py-2 mb-2 bg-gray-100 rounded-md shadow-sm">
                     <User className="w-5 h-5 text-juicy-green" />
                     <span className="text-sm font-medium text-gray-700">{user.username}</span>
                   </div>
                 )}
-                <Link to="/" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+
+                <Link to="/" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                   Home
                 </Link>
-                <Link to="/shop" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                <Link to="/shop" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                   Shop
                 </Link>
-                <Link to="/about" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                <Link to="/about" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                   About
                 </Link>
-                <Link to="/contact" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                <Link to="/contact" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                   Contact
                 </Link>
-                <hr />
+                <hr className="mx-4" />
                 {user ? (
                   <>
-                    <Link to="/profile" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                    <Link to="/profile" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                       Profile
                     </Link>
-                    <Link
-                      to="/order" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">                    >
+                    <Link to="/order" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                       Order
                     </Link>
                     <Button
                       variant="ghost"
-                      className="text-left px-0 hover:text-juicy-green"
+                      className="text-left px-4 hover:text-juicy-green"
                       onClick={() => {
                         handleLogout();
                         setSheetOpen(false);
@@ -173,10 +173,10 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                    <Link to="/login" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                    <Link to="/login" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                       Login
                     </Link>
-                    <Link to="/register" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green">
+                    <Link to="/register" onClick={() => setSheetOpen(false)} className="font-semibold hover:text-juicy-green px-4">
                       Register
                     </Link>
                   </>
