@@ -30,7 +30,7 @@ import Contact from "./pages/contact";
 import NotFound from "./pages/NotFound";
 import CheckEmail from "./pages/CheckEmail";
 import VerifyEmail from "./pages/VerifyEmail";
-// import Wishlist from "./pages/Wishlist";
+import Profile from "./pages/Profile";
 
 // Admin pages
 import AdminLogin from "./admin/login";
@@ -76,7 +76,7 @@ const App = () => {
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
-                  {/*<Route path ="/wishlist" element={<Wishlist />} />*/}
+                  {/*<Route path ="/profile" element={<Profile />} />*/}
                   <Route
                     path="/checkout"
                     element={
