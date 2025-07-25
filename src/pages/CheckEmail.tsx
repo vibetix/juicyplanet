@@ -34,7 +34,7 @@ const CheckEmail = () => {
       retryCount++;
 
       try {
-        const res = await axios.post("http://localhost:4000/user/check-verification", {
+        const res = await axios.post("https://juicy-backend.onrender.com/user/check-verification", {
           email: storedEmail,
         });
 
@@ -62,7 +62,7 @@ const CheckEmail = () => {
   const handleResend = async () => {
     try {
       setResending(true);
-      const res = await fetch("http://localhost:4000/user/resend-email", {
+      const res = await fetch("https://juicy-backend.onrender.com/user/resend-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
