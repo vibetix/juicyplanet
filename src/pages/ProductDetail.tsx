@@ -65,16 +65,20 @@ const ProductDetail = () => {
     }
   }, [slug]);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center text-gray-500">
-        <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-        <Button onClick={() => navigate('/shop')} className="mt-4">
-          Back to Shop
-        </Button>
-      </div>
-    );
-  }
+  if (loading) {
+  return <LoadingSpinner />;
+}
+
+if (!product) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-center text-gray-500">
+      <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+      <Button onClick={() => navigate('/shop')} className="mt-4">
+        Back to Shop
+      </Button>
+    </div>
+  );
+}
 
   const price = parsePrice(product.price);
   const originalPrice = product.original_price ? parsePrice(product.original_price) : null;
@@ -116,10 +120,7 @@ const ProductDetail = () => {
         onClick: () => navigate('/cart'),
       },
     });
-  };
-if (loading){
-  return <LoadingSpinner />;
-} 
+  }; 
   return (
     <div className="min-h-screen bg-white">
       <Header />
