@@ -38,6 +38,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<any>(null);
   const { addItem } = useCart();
   const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
   const [loading, setLoading] = useState(true);
@@ -52,10 +53,13 @@ const ProductDetail = () => {
         const res = await fetch(`https://juicy-backend.onrender.com/user/product/${slug}`);
         const data = await res.json();
         setProduct(data);
+        if (data.sizes && data.sizes.length > 0) {
+          setSelectedSize(data.sizes[0]);
+        }
       } catch (err) {
         console.error('Failed to fetch product:', err);
         toast.error('Failed to load product.');
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -65,29 +69,31 @@ const ProductDetail = () => {
     }
   }, [slug]);
 
-  if (loading) {
-  return <LoadingSpinner />;
-}
+  if (loading) return <LoadingSpinner />;
 
-if (!product) {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center text-gray-500">
-      <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-      <Button onClick={() => navigate('/shop')} className="mt-4">
-        Back to Shop
-      </Button>
-    </div>
-  );
-}
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center text-gray-500">
+        <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+        <Button onClick={() => navigate('/shop')} className="mt-4">
+          Back to Shop
+        </Button>
+      </div>
+    );
+  }
 
-  const price = parsePrice(product.price);
-  const originalPrice = product.original_price ? parsePrice(product.original_price) : null;
+  const price = selectedSize ? parsePrice(selectedSize.price) : parsePrice(product.price);
+  const originalPrice = selectedSize?.original_price
+    ? parsePrice(selectedSize.original_price)
+    : product.original_price
+    ? parsePrice(product.original_price)
+    : null;
 
   const handleWishlistToggle = () => {
     const wishlistItem = {
       id: product.id,
       slug: product.slug,
-      name: product.name,
+      name: `${product.name} - ${selectedSize?.label || 'Default'}`,
       price,
       image: product.images?.[0],
       rating: product.rating,
@@ -107,9 +113,10 @@ if (!product) {
       {
         id: product.id,
         slug: product.slug,
-        name: product.name,
+        name: `${product.name} - ${selectedSize?.label || 'Default'}`,
         price,
         image: product.images?.[0],
+        size: selectedSize?.label || null,
       },
       quantity
     );
@@ -120,7 +127,8 @@ if (!product) {
         onClick: () => navigate('/cart'),
       },
     });
-  }; 
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -206,48 +214,26 @@ if (!product) {
                 </div>
               </div>
 
-              {product.rating && (
-                <div className="flex items-center gap-2">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.floor(product.rating)
-                            ? 'text-yellow-400 fill-current'
-                            : i < product.rating
-                            ? 'text-yellow-400 fill-current opacity-50'
-                            : 'text-gray-300 fill-current'
-                        }`}
-                      />
+              {product.sizes?.length > 0 && (
+                <div className="pt-4 border-t border-gray-200">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size: any, idx: number) => (
+                      <Button
+                        key={idx}
+                        variant={selectedSize?.label === size.label ? 'default' : 'outline'}
+                        onClick={() => setSelectedSize(size)}
+                        className="capitalize"
+                      >
+                        {size.label}
+                      </Button>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600">
-                    {product.rating} ({product.review_count || 0} reviews)
-                  </span>
                 </div>
               )}
 
-              <p className="text-gray-700 leading-relaxed">
-                {product.detailed_description || product.description}
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {product.benefits?.map((benefit: string, idx: number) => (
-                  <Badge
-                    key={idx}
-                    variant="secondary"
-                    className="bg-green-50 text-green-800 hover:bg-green-100"
-                  >
-                    {benefit}
-                  </Badge>
-                ))}
-              </div>
-
               <div className="pt-4 border-t border-gray-200">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantity
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                 <div className="flex items-center space-x-3">
                   <Button
                     variant="outline"
