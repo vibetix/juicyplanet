@@ -29,6 +29,8 @@ router.post('/check-verification', userController_1.checkVerificationStatus);
 router.get('/profile', UserAuthMiddleware_1.authenticateToken, UserAuthMiddleware_1.requireUser, userController_1.getUserProfile);
 // Get all products
 router.get('/products', userController_1.getAllProducts);
+
+router.post('/contact', userController_1.submitContactMessage);
 // GET /api/products/:slug
 router.get('/product/:slug', userController_1.getProductBySlug);
 // make mobile money payment
