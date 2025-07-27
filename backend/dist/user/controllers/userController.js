@@ -368,3 +368,26 @@ const initiateMoMoPayment = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.initiateMoMoPayment = initiateMoMoPayment;
+
+export const submitContactMessage = async (req: Request, res: Response) => {
+  const { name, email, message } = req.body;
+
+  // Basic validation
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  try {
+    const { error } = await supabase.from('contact_messages').insert([{ name, email, message }]);
+
+    if (error) {
+      console.error('Error saving contact message:', error.message);
+      return res.status(500).json({ error: 'Failed to save message. Please try again.' });
+    }
+
+    res.status(200).json({ message: 'Your message was submitted successfully!' });
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    res.status(500).json({ error: 'Server error. Please try again later.' });
+  }
+};
