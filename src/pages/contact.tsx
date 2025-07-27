@@ -30,7 +30,20 @@ const Contact = () => {
     toast.error(result.error || 'Failed to send message.');
   }
 };
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-info`);
+        const data = await res.json();
+        setContactInfo(data);
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to load contact info');
+      }
+    };
 
+    fetchContactInfo();
+  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
