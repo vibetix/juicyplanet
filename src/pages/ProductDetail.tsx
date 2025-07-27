@@ -213,7 +213,43 @@ const ProductDetail = () => {
                   )}
                 </div>
               </div>
+               {product.rating && (
+                <div className="flex items-center gap-2">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={w-5 h-5 ${
+                          i < Math.floor(product.rating)
+                            ? 'text-yellow-400 fill-current'
+                            : i < product.rating
+                            ? 'text-yellow-400 fill-current opacity-50'
+                            : 'text-gray-300 fill-current'
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">
+                    {product.rating} ({product.review_count || 0} reviews)
+                  </span>
+                </div>
+              )}
 
+              <p className="text-gray-700 leading-relaxed">
+                {product.detailed_description || product.description}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {product.benefits?.map((benefit: string, idx: number) => (
+                  <Badge
+                    key={idx}
+                    variant="secondary"
+                    className="bg-green-50 text-green-800 hover:bg-green-100"
+                  >
+                    {benefit}
+                  </Badge>
+                ))}
+              </div>
               {product.sizes?.length > 0 && (
                 <div className="pt-4 border-t border-gray-200">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
