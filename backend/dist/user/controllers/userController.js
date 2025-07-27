@@ -391,3 +391,30 @@ export const submitContactMessage = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error. Please try again later.' });
   }
 };
+// GET /contact-info
+export const getContactInfo = async (_req: Request, res: Response) => {
+  try {
+    const { data, error } = await supabase
+      .from('contact_info')
+      .select('*')
+      .order('type', { ascending: true })
+      .order('label', { ascending: true });
+
+    if (error) {
+      console.error('Supabase Error:', error.message);
+      return res.status(500).json({ error: 'Failed to fetch contact info.' });
+    }
+
+    // Optionally group by type
+    const grouped = data.reduce((acc: any, item) => {
+      if (!acc[item.type]) acc[item.type] = [];
+      acc[item.type].push(item);
+      return acc;
+    }, {});
+
+    return res.status(200).json(grouped);
+  } catch (err) {
+    console.error('Unexpected Error:', err);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
