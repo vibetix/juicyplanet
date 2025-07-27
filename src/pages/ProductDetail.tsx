@@ -213,7 +213,6 @@ const ProductDetail = () => {
                   )}
                 </div>
               </div>
-
               {product.rating && (
                 <div className="flex items-center gap-2">
                   <div className="flex">
@@ -236,4 +235,134 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              <!-- Remaining part of the component remains unchanged -->
+              <p className="text-gray-700 leading-relaxed">
+                {product.detailed_description || product.description}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {product.benefits?.map((benefit: string, idx: number) => (
+                  <Badge
+                    key={idx}
+                    variant="secondary"
+                    className="bg-green-50 text-green-800 hover:bg-green-100"
+                  >
+                    {benefit}
+                  </Badge>
+                ))}
+              </div>
+              {product.sizes?.length > 0 && (
+                <div className="pt-4 border-t border-gray-200">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size: any, idx: number) => (
+                      <Button
+                        key={idx}
+                        variant={selectedSize?.label === size.label ? 'default' : 'outline'}
+                        onClick={() => setSelectedSize(size)}
+                        className="capitalize"
+                      >
+                        {size.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-gray-200">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                <div className="flex items-center space-x-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <span className="font-medium text-gray-800 w-8 text-center">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    disabled={product.stock && quantity >= product.stock}
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-gray-200">
+                <Button
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg shadow-md transition-colors duration-200"
+                  onClick={handleAddToCart}
+                  size="lg"
+                  disabled={product.stock === 0}
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </Button>
+                <Button
+                  onClick={handleWishlistToggle}
+                  variant={isInWishlist(product.id) ? 'destructive' : 'outline'}
+                  className="w-full rounded-lg transition-colors duration-200"
+                  size="lg"
+                >
+                  {isInWishlist(product.id) ? (
+                    <>
+                      <HeartFilled className="w-5 h-5 mr-2" />
+                      Remove from Wishlist
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="w-5 h-5 mr-2" />
+                      Add to Wishlist
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <Tabs defaultValue="details" className="mt-8">
+                <TabsList className="grid w-full grid-cols-3 bg-gray-100">
+                  <TabsTrigger value="details">Details</TabsTrigger>
+                  <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+                  <TabsTrigger value="care">Care Guide</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="details" className="mt-6">
+                  {product.details ? (
+                    <ul className="space-y-2">
+                      {product.details.map((detail: string, i: number) => (
+                        <li key={i} className="flex items-start">
+                          <span className="text-yellow-500 mr-2">•</span>
+                          <span className="text-gray-700">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-700">{product.description}</p>
+                  )}
+                </TabsContent>
+                <TabsContent value="ingredients" className="mt-6">
+                  <p className="text-gray-700">{product.materials}</p>
+                </TabsContent>
+                <TabsContent value="care" className="mt-6">
+                  <p className="text-gray-700">
+                    {product.care || 'No special care instructions needed.'}
+                  </p>
+                </TabsContent>
+              </Tabs>
+
+              {/* Remaining part of the component remains unchanged */}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default ProductDetail;
