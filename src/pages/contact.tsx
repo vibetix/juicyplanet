@@ -16,7 +16,7 @@ const Contact = () => {
     message: form.get("message"),
   };
 
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/contact`, {
+  const res = await fetch(`https://juicy-backend.onrender.com/user/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
