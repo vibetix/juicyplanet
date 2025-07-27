@@ -22,6 +22,8 @@ router.post('/resend-email', userController_1.resendEmailController);
 router.get('/verify-email/:token', userController_1.verifyEmail);
 // check verification
 router.post('/check-verification', userController_1.checkVerificationStatus);
+router.get('/contact-info', userController_1.getContactInfo);
+router.post('/contact', userController_1.submitContactMessage);
 // =======================
 // 🔐 Protected User Routes
 // =======================
@@ -29,10 +31,6 @@ router.post('/check-verification', userController_1.checkVerificationStatus);
 router.get('/profile', UserAuthMiddleware_1.authenticateToken, UserAuthMiddleware_1.requireUser, userController_1.getUserProfile);
 // Get all products
 router.get('/products', userController_1.getAllProducts);
-
-router.post('/contact', userController_1.submitContactMessage);
-
-router.get('/contact-info', userController_1.getContactInfo);
 // GET /api/products/:slug
 router.get('/product/:slug', userController_1.getProductBySlug);
 // make mobile money payment

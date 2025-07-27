@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
+exports.getContactInfo = exports.submitContactMessage = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
@@ -368,53 +368,50 @@ const initiateMoMoPayment = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.initiateMoMoPayment = initiateMoMoPayment;
-
-export const submitContactMessage = async (req: Request, res: Response) => {
-  const { name, email, message } = req.body;
-
-  // Basic validation
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-
-  try {
-    const { error } = await supabase.from('contact_messages').insert([{ name, email, message }]);
-
-    if (error) {
-      console.error('Error saving contact message:', error.message);
-      return res.status(500).json({ error: 'Failed to save message. Please try again.' });
+const submitContactMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, message } = req.body;
+    // Basic validation
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: 'All fields are required.' });
     }
-
-    res.status(200).json({ message: 'Your message was submitted successfully!' });
-  } catch (err) {
-    console.error('Unexpected error:', err);
-    res.status(500).json({ error: 'Server error. Please try again later.' });
-  }
-};
+    try {
+        const { error } = yield supabaseClient_1.default.from('contact_messages').insert([{ name, email, message }]);
+        if (error) {
+            console.error('Error saving contact message:', error.message);
+            return res.status(500).json({ error: 'Failed to save message. Please try again.' });
+        }
+        res.status(200).json({ message: 'Your message was submitted successfully!' });
+    }
+    catch (err) {
+        console.error('Unexpected error:', err);
+        res.status(500).json({ error: 'Server error. Please try again later.' });
+    }
+});
+exports.submitContactMessage = submitContactMessage;
 // GET /contact-info
-export const getContactInfo = async (_req: Request, res: Response) => {
-  try {
-    const { data, error } = await supabase
-      .from('contact_info')
-      .select('*')
-      .order('type', { ascending: true })
-      .order('label', { ascending: true });
-
-    if (error) {
-      console.error('Supabase Error:', error.message);
-      return res.status(500).json({ error: 'Failed to fetch contact info.' });
+const getContactInfo = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { data, error } = yield supabaseClient_1.default
+            .from('contact_info')
+            .select('*')
+            .order('type', { ascending: true })
+            .order('label', { ascending: true });
+        if (error) {
+            console.error('Supabase Error:', error.message);
+            return res.status(500).json({ error: 'Failed to fetch contact info.' });
+        }
+        // Optionally group by type
+        const grouped = data.reduce((acc, item) => {
+            if (!acc[item.type])
+                acc[item.type] = [];
+            acc[item.type].push(item);
+            return acc;
+        }, {});
+        return res.status(200).json(grouped);
     }
-
-    // Optionally group by type
-    const grouped = data.reduce((acc: any, item) => {
-      if (!acc[item.type]) acc[item.type] = [];
-      acc[item.type].push(item);
-      return acc;
-    }, {});
-
-    return res.status(200).json(grouped);
-  } catch (err) {
-    console.error('Unexpected Error:', err);
-    return res.status(500).json({ error: 'Internal server error.' });
-  }
-};
+    catch (err) {
+        console.error('Unexpected Error:', err);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+exports.getContactInfo = getContactInfo;
