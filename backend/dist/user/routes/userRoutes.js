@@ -31,6 +31,8 @@ router.get('/profile', UserAuthMiddleware_1.authenticateToken, UserAuthMiddlewar
 router.get('/products', userController_1.getAllProducts);
 
 router.post('/contact', userController_1.submitContactMessage);
+
+router.get('/contact-info', userController_1.getContactInfo);
 // GET /api/products/:slug
 router.get('/product/:slug', userController_1.getProductBySlug);
 // make mobile money payment
