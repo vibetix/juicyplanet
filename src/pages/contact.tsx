@@ -6,6 +6,31 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 const Contact = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const form = new FormData(e.target as HTMLFormElement);
+  const data = {
+    name: form.get("name"),
+    email: form.get("email"),
+    message: form.get("message"),
+  };
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  if (res.ok) {
+    toast.success(result.message);
+    (e.target as HTMLFormElement).reset();
+  } else {
+    toast.error(result.error || 'Failed to send message.');
+  }
+};
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
