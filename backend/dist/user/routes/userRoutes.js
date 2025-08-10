@@ -22,8 +22,6 @@ router.post('/resend-email', userController_1.resendEmailController);
 router.get('/verify-email/:token', userController_1.verifyEmail);
 // check verification
 router.post('/check-verification', userController_1.checkVerificationStatus);
-router.get('/contact-info', userController_1.getContactInfo);
-router.post('/contact', userController_1.submitContactMessage);
 // =======================
 // 🔐 Protected User Routes
 // =======================
