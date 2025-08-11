@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import supabase from '../utils/supabaseClient';
 import { signToken } from '../utils/jwt';
 import { generateToken } from '../utils/token';
-import { sendVerificationEmail } from '../utils/mailer';
+import { sendVerificationEmail,sendContactNotification } from '../utils/mailer';
 import crypto from 'crypto';
 import axios from 'axios';
 
@@ -406,3 +406,40 @@ export const initiateMoMoPayment = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: 'Payment failed' });
   }
 };
+// GET /user/contact-info
+export const getContactInfo = async (req: Request, res: Response) => {
+  const { data, error } = await supabase
+    .from("contact_info")
+    .select("*")
+    .single();
+
+  if (error) {
+    console.error("❌ Error fetching contact info:", error);
+    return res.status(500).json({ error: "Failed to load contact info" });
+  }
+
+  return res.json(data);
+};
+
+// POST /user/contact
+export const sendContactMessage = async (req: Request, res: Response) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const { error } = await supabase
+    .from("contact_messages")
+    .insert([{ name, email, message }]);
+
+  if (error) {
+    console.error("❌ Error saving contact message:", error);
+    return res.status(500).json({ error: "Failed to send message" });
+  }
+   // Send notification email
+    await sendContactNotification({ name, email, message });
+
+  return res.json({ message: "Message sent successfully!" });
+};
+

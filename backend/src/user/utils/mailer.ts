@@ -6,14 +6,13 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465, // Use SSL
-  secure: true, // MUST be true for port 465
+  port: 465, // SSL port
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
-
 
 interface SendVerificationEmailParams {
   email: string;
@@ -31,9 +30,7 @@ export const sendVerificationEmail = async ({ email, token }: SendVerificationEm
       <div style="font-family: 'Arial', sans-serif; background-color: #fefce8; padding: 40px;">
         <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;">
           <div style="background: linear-gradient(135deg, #FFD54F, #FFF3C2); color: #00C896; padding: 30px 20px; text-align: center;">
-           <div className="w-10 h-10 bg-gradient-to-br from-juicy-yellow to-juicy-yellow-light rounded-full flex items-center justify-center shadow-lg">
-            <span className="text-4xl" aria-hidden="true">🧃</span>
-          </div>
+            <span style="font-size: 40px;">🧃</span>
             <h1 style="margin: 0; font-size: 28px;">JuicyPlanet</h1>
             <p style="margin: 10px 0 0; font-size: 16px;">Fresh. Fruity. Feel-Good 🍹</p>
           </div>
@@ -63,5 +60,52 @@ export const sendVerificationEmail = async ({ email, token }: SendVerificationEm
   } catch (error) {
     console.error(`❌ Failed to send verification email:`, error);
     throw new Error("Failed to send verification email");
+  }
+};
+
+interface SendContactNotificationParams {
+  name: string;
+  email: string;
+  message: string;
+}
+
+export const sendContactNotification = async ({
+  name,
+  email,
+  message,
+}: SendContactNotificationParams) => {
+  const mailOptions = {
+    from: `"JuicyPlanet 🧃" <${process.env.EMAIL_USER}>`,
+    to: process.env.CONTACT_NOTIFICATION_EMAIL,
+    subject: `📩 New Contact Message from ${name}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #fefce8; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #FFD54F, #FFF3C2); color: #00C896; padding: 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 26px;">JuicyPlanet Contact Form</h1>
+            <p style="margin: 5px 0 0; font-size: 14px;">Fresh. Fruity. Feel-Good 🍹</p>
+          </div>
+          <div style="padding: 25px; color: #333333;">
+            <h2 style="margin-bottom: 10px;">New Message Details</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p style="background-color: #f9f9f9; padding: 10px; border-radius: 8px;">${message}</p>
+          </div>
+          <div style="background-color: #FFF0DC; padding: 15px; text-align: center; font-size: 12px; color: #888888;">
+            <p style="margin: 0;">© ${new Date().getFullYear()} JuicyPlanet. All rights reserved.</p>
+            <p style="margin: 5px 0 0;">Stay juicy 🍊</p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Contact notification sent for ${name}`);
+  } catch (error) {
+    console.error(`❌ Failed to send contact notification:`, error);
+    throw new Error("Failed to send contact notification email");
   }
 };

@@ -9,7 +9,9 @@ import {
   verifyEmail,
   getAllProducts,
   getProductBySlug,
-  initiateMoMoPayment, 
+  initiateMoMoPayment,
+  getContactInfo,
+  sendContactMessage 
 } from '../controllers/userController'; 
 
 import {
@@ -58,5 +60,8 @@ router.get('/product/:slug', getProductBySlug);
 
 // make mobile money payment
 router.post('/checkout', initiateMoMoPayment);
+
+router.get('/contact-info', getContactInfo);
+router.post("/contact", sendContactMessage);
 
 export default router;
