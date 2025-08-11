@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
+exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
@@ -368,3 +368,34 @@ const initiateMoMoPayment = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.initiateMoMoPayment = initiateMoMoPayment;
+// GET /user/contact-info
+const getContactInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, error } = yield supabaseClient_1.default
+        .from("contact_info")
+        .select("*")
+        .single();
+    if (error) {
+        console.error("❌ Error fetching contact info:", error);
+        return res.status(500).json({ error: "Failed to load contact info" });
+    }
+    return res.json(data);
+});
+exports.getContactInfo = getContactInfo;
+// POST /user/contact
+const sendContactMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+    const { error } = yield supabaseClient_1.default
+        .from("contact_messages")
+        .insert([{ name, email, message }]);
+    if (error) {
+        console.error("❌ Error saving contact message:", error);
+        return res.status(500).json({ error: "Failed to send message" });
+    }
+    // Send notification email
+    yield (0, mailer_1.sendContactNotification)({ name, email, message });
+    return res.json({ message: "Message sent successfully!" });
+});
+exports.sendContactMessage = sendContactMessage;

@@ -33,4 +33,6 @@ router.get('/products', userController_1.getAllProducts);
 router.get('/product/:slug', userController_1.getProductBySlug);
 // make mobile money payment
 router.post('/checkout', userController_1.initiateMoMoPayment);
+router.get('/contact-info', userController_1.getContactInfo);
+router.post("/contact", userController_1.sendContactMessage);
 exports.default = router;
