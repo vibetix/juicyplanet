@@ -1,25 +1,32 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
-const express_1 = require("express");
+exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
 const token_1 = require("../utils/token");
 const mailer_1 = require("../utils/mailer");
-const crypto_1 = __importDefault(require("crypto"));
 const axios_1 = __importDefault(require("axios"));
-const registerUser = async (req, res) => {
+const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, username, phone } = req.body;
     if (!email || !password) {
         return res.status(400).json({ error: 'Email and password are required' });
     }
     try {
         // 🚫 Check if user exists
-        const { data: existingUser, error: fetchError } = await supabaseClient_1.default
+        const { data: existingUser, error: fetchError } = yield supabaseClient_1.default
             .from('users')
             .select('id')
             .eq('email', email)
@@ -30,9 +37,9 @@ const registerUser = async (req, res) => {
             return res.status(409).json({ error: 'User already exists' });
         }
         // 🔐 Hash password
-        const hashedPassword = await bcrypt_1.default.hash(password, 10);
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         // ✅ Insert new user
-        const { data: newUser, error: insertError } = await supabaseClient_1.default
+        const { data: newUser, error: insertError } = yield supabaseClient_1.default
             .from('users')
             .insert([
             {
@@ -51,7 +58,7 @@ const registerUser = async (req, res) => {
         // 🧪 Generate token and save to email_tokens
         const token = (0, token_1.generateToken)();
         const expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
-        const { error: tokenError } = await supabaseClient_1.default
+        const { error: tokenError } = yield supabaseClient_1.default
             .from('email_tokens')
             .insert([{ user_id: newUser.id, token, expires_at: expiry.toISOString(), }]);
         if (tokenError) {
@@ -68,9 +75,9 @@ const registerUser = async (req, res) => {
     catch (err) {
         return res.status(500).json({ error: err.message || 'Server error' });
     }
-};
+});
 exports.registerUser = registerUser;
-const sendVerificationEmailController = async (req, res) => {
+const sendVerificationEmailController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id, email } = req.body;
     console.log("📥 Email verification request received:", { user_id, email }); // 🔍 Log input
     if (!user_id || !email) {
@@ -78,7 +85,7 @@ const sendVerificationEmailController = async (req, res) => {
     }
     try {
         // Get token from email_tokens table
-        const { data: tokenData, error: tokenError } = await supabaseClient_1.default
+        const { data: tokenData, error: tokenError } = yield supabaseClient_1.default
             .from('email_tokens')
             .select('token')
             .eq('user_id', user_id)
@@ -89,23 +96,23 @@ const sendVerificationEmailController = async (req, res) => {
             return res.status(404).json({ error: 'Verification token not found' });
         }
         // Send the email
-        await (0, mailer_1.sendVerificationEmail)({ email, token: tokenData.token });
+        yield (0, mailer_1.sendVerificationEmail)({ email, token: tokenData.token });
         return res.status(200).json({ message: 'Verification email sent.' });
     }
     catch (err) {
         console.error("❌ Failed to send verification email:", err); // Log error
         return res.status(500).json({ error: err.message || 'Failed to send verification email' });
     }
-};
+});
 exports.sendVerificationEmailController = sendVerificationEmailController;
 // ✅ check Email verification status
-const checkVerificationStatus = async (req, res) => {
+const checkVerificationStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user_id, email } = req.body;
         if (!email) {
             return res.status(400).json({ error: 'Email is required.' });
         }
-        const { data: user, error } = await supabaseClient_1.default
+        const { data: user, error } = yield supabaseClient_1.default
             .from('users')
             .select('is_verified')
             .eq('email', email)
@@ -113,20 +120,20 @@ const checkVerificationStatus = async (req, res) => {
         if (error) {
             return res.status(500).json({ error: error.message });
         }
-        res.status(200).json({ verified: user?.is_verified });
+        res.status(200).json({ verified: user === null || user === void 0 ? void 0 : user.is_verified });
     }
     catch (err) {
         res.status(500).json({ error: 'Something went wrong.' });
     }
-};
+});
 exports.checkVerificationStatus = checkVerificationStatus;
 // ✅ Verify Email
-const verifyEmail = async (req, res) => {
+const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.params.token;
     console.log("🔐 Token received in URL:", token);
     try {
         // 1. Look up token in email_tokens table
-        const { data: tokenRow, error: tokenError } = await supabaseClient_1.default
+        const { data: tokenRow, error: tokenError } = yield supabaseClient_1.default
             .from('email_tokens')
             .select('*')
             .eq('token', token)
@@ -144,7 +151,7 @@ const verifyEmail = async (req, res) => {
         }
         const userId = tokenRow.user_id;
         // 3. Look up user by user_id
-        const { data: user, error: userError } = await supabaseClient_1.default
+        const { data: user, error: userError } = yield supabaseClient_1.default
             .from('users')
             .select('*')
             .eq('id', userId)
@@ -158,7 +165,7 @@ const verifyEmail = async (req, res) => {
             return res.status(200).json({ message: 'Email already verified' });
         }
         // 4. Update user to set is_verified = true
-        const { error: updateError } = await supabaseClient_1.default
+        const { error: updateError } = yield supabaseClient_1.default
             .from('users')
             .update({ is_verified: true })
             .eq('id', userId);
@@ -167,7 +174,7 @@ const verifyEmail = async (req, res) => {
             return res.status(500).json({ error: 'Could not verify email' });
         }
         // 5. Delete token after successful verification
-        await supabaseClient_1.default
+        yield supabaseClient_1.default
             .from('email_tokens')
             .delete()
             .eq('token', token);
@@ -178,10 +185,10 @@ const verifyEmail = async (req, res) => {
         console.error("❌ Unexpected error:", err.message);
         return res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.verifyEmail = verifyEmail;
 // ✅ Resend Verification Email
-const resendEmailController = async (req, res) => {
+const resendEmailController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id, email } = req.body;
     console.log("📥 Resend verification email request:", { user_id, email });
     if (!user_id || !email) {
@@ -192,9 +199,9 @@ const resendEmailController = async (req, res) => {
         const newToken = (0, token_1.generateToken)();
         const expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
         // 2. Delete old token (cleanup)
-        await supabaseClient_1.default.from("email_tokens").delete().eq("user_id", user_id);
+        yield supabaseClient_1.default.from("email_tokens").delete().eq("user_id", user_id);
         // 3. Save new token
-        const { error: insertError } = await supabaseClient_1.default.from("email_tokens").insert([
+        const { error: insertError } = yield supabaseClient_1.default.from("email_tokens").insert([
             {
                 user_id,
                 token: newToken,
@@ -204,19 +211,19 @@ const resendEmailController = async (req, res) => {
         if (insertError)
             throw insertError;
         // 4. Send verification email
-        await (0, mailer_1.sendVerificationEmail)({ email, token: newToken });
+        yield (0, mailer_1.sendVerificationEmail)({ email, token: newToken });
         return res.status(200).json({ message: "Verification email sent." });
     }
     catch (err) {
         console.error("❌ Error resending verification email:", err);
         return res.status(500).json({ error: "Could not resend verification email." });
     }
-};
+});
 exports.resendEmailController = resendEmailController;
 // ✅ Login
-const loginUser = async (req, res) => {
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { identifier, password } = req.body;
-    const { data: user, error } = await supabaseClient_1.default
+    const { data: user, error } = yield supabaseClient_1.default
         .from("users")
         .select("*")
         .or(`email.eq.${identifier},username.eq.${identifier},phone.eq.${identifier}`)
@@ -224,7 +231,7 @@ const loginUser = async (req, res) => {
     if (error || !user) {
         return res.status(400).json({ message: "User not found" });
     }
-    const isValid = await bcrypt_1.default.compare(password, user.password);
+    const isValid = yield bcrypt_1.default.compare(password, user.password);
     if (!isValid) {
         return res.status(401).json({ message: "Incorrect password" });
     }
@@ -241,17 +248,17 @@ const loginUser = async (req, res) => {
             role
         }
     });
-};
+});
 exports.loginUser = loginUser;
 // ✅ Get User Profile
-const getUserProfile = async (req, res) => {
+const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     console.log("👤 Logged-in user:", user);
     if (!user || user.role !== 'user') {
         return res.status(403).json({ error: 'Forbidden: Users only' });
     }
     try {
-        const { data, error } = await supabaseClient_1.default
+        const { data, error } = yield supabaseClient_1.default
             .from('users')
             .select('id, email, username, phone, role, is_verified, created_at')
             .eq('id', user.id)
@@ -265,10 +272,10 @@ const getUserProfile = async (req, res) => {
     catch (err) {
         return res.status(500).json({ error: err.message || 'Server error' });
     }
-};
+});
 exports.getUserProfile = getUserProfile;
 // GET /api/products
-const getAllProducts = async (req, res) => {
+const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const category = req.query.category;
         const isFeatured = req.query.featured === 'true';
@@ -296,7 +303,7 @@ const getAllProducts = async (req, res) => {
         if (isFeatured) {
             query = query.eq('is_featured', true);
         }
-        const { data, error } = await query;
+        const { data, error } = yield query;
         if (error) {
             console.error('Supabase error:', error.message);
             return res.status(500).json({ error: error.message });
@@ -307,19 +314,19 @@ const getAllProducts = async (req, res) => {
         console.error('Server error:', err);
         return res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.getAllProducts = getAllProducts;
 // GET /api/products/:slug
-const getProductBySlug = async (req, res) => {
+const getProductBySlug = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { slug } = req.params;
-        const { data, error } = await supabaseClient_1.default
+        const { data, error } = yield supabaseClient_1.default
             .from('products')
             .select('*')
             .eq('slug', slug)
             .single();
         if (error || !data) {
-            console.error('Product fetch error:', error?.message || 'Product not found');
+            console.error('Product fetch error:', (error === null || error === void 0 ? void 0 : error.message) || 'Product not found');
             return res.status(404).json({ error: 'Product not found' });
         }
         return res.status(200).json(data);
@@ -328,13 +335,13 @@ const getProductBySlug = async (req, res) => {
         console.error('Server error:', err);
         return res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.getProductBySlug = getProductBySlug;
 // controllers/paymentController.ts
-const initiateMoMoPayment = async (req, res) => {
+const initiateMoMoPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { phone, amount } = req.body;
     try {
-        const momoRes = await axios_1.default.post('https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay', {
+        const momoRes = yield axios_1.default.post('https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay', {
             amount: amount,
             currency: 'GHS',
             externalId: Date.now().toString(),
@@ -359,6 +366,35 @@ const initiateMoMoPayment = async (req, res) => {
         console.error(error);
         res.status(500).json({ success: false, error: 'Payment failed' });
     }
-};
+});
 exports.initiateMoMoPayment = initiateMoMoPayment;
-//# sourceMappingURL=userController.js.map
+// GET /user/contact-info
+const getContactInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, error } = yield supabaseClient_1.default
+        .from("contact_info")
+        .select("*");
+    if (error) {
+        console.error("❌ Error fetching contact info:", error);
+        return res.status(500).json({ error: "Failed to load contact info" });
+    }
+    return res.json(data);
+});
+exports.getContactInfo = getContactInfo;
+// POST /user/contact
+const sendContactMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+    const { error } = yield supabaseClient_1.default
+        .from("contact_messages")
+        .insert([{ name, email, message }]);
+    if (error) {
+        console.error("❌ Error saving contact message:", error);
+        return res.status(500).json({ error: "Failed to send message" });
+    }
+    // Send notification email
+    yield (0, mailer_1.sendContactNotification)({ name, email, message });
+    return res.json({ message: "Message sent successfully!" });
+});
+exports.sendContactMessage = sendContactMessage;
