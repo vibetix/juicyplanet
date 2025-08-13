@@ -410,8 +410,7 @@ export const initiateMoMoPayment = async (req: Request, res: Response) => {
 export const getContactInfo = async (req: Request, res: Response) => {
   const { data, error } = await supabase
     .from("contact_info")
-    .select("*")
-    .single();
+    .select("*");
 
   if (error) {
     console.error("❌ Error fetching contact info:", error);
