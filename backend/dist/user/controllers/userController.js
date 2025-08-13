@@ -372,8 +372,7 @@ exports.initiateMoMoPayment = initiateMoMoPayment;
 const getContactInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { data, error } = yield supabaseClient_1.default
         .from("contact_info")
-        .select("*")
-        .single();
+        .select("*");
     if (error) {
         console.error("❌ Error fetching contact info:", error);
         return res.status(500).json({ error: "Failed to load contact info" });
