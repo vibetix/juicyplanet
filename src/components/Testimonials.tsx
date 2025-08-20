@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Testimonials = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -9,7 +10,7 @@ const Testimonials = () => {
    {
       name: "Safety Technologies",
       location: "Madina",
-      text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference. Thank you!",
+      text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference.The taste, the difference indeed. Thank you!",
       rating: 5,
       image: "👷‍♂️"
     },
@@ -140,6 +141,15 @@ const Testimonials = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="text-center">
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-juicy-green text-juicy-green hover:bg-juicy-green hover:text-white font-quicksand font-semibold px-8 py-4 rounded-full transition-all duration-300"
+          >
+            <a href="/testimonials">View All Testimonials →</a>
+          </Button>
         </div>
       </div>
     </section>
