@@ -31,6 +31,7 @@ import NotFound from "./pages/NotFound";
 import CheckEmail from "./pages/CheckEmail";
 import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
+import Testimonials from "./pages/Testimonials";
 
 // Admin pages
 import AdminLogin from "./admin/login";
@@ -92,7 +93,7 @@ const App = () => {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/check-email" element={<CheckEmail />} />
                   <Route path="/verify-email/:token" element={<VerifyEmail />} />
-
+                  <Route path="/testimonials" element={<Testimonials />} />
                   {/* Admin Routes */}
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route
