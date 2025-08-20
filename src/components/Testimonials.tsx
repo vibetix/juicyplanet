@@ -7,30 +7,58 @@ const Testimonials = () => {
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      location: "Downtown",
+      name: "Sarah Asamoah",
+      location: "Labadi",
       text: "Juicy Planet has transformed my morning routine! The Glow-Up Greens juice gives me energy that lasts all day. I love knowing exactly what's in my juice.",
       rating: 5,
       image: "👩‍💼"
     },
     {
-      name: "Mike Rodriguez",
-      location: "Midtown",
+      name: "Mike Frimpong",
+      location: "Michel camp",
       text: "As a fitness enthusiast, I'm always looking for natural energy sources. The Sunrise Energy juice is perfect post-workout. Fresh, delicious, and no artificial stuff!",
       rating: 5,
       image: "🏃‍♂️"
     },
     {
-      name: "Emma Wilson",
-      location: "Uptown",
+      name: "Emmanuella Wilson",
+      location: "Ashaiman",
       text: "The Berry Bliss is my absolute favorite! It tastes like summer in a bottle. You can really taste the difference when it's made with love and quality ingredients.",
       rating: 5,
       image: "🌺"
     },
     {
-      name: "David Chen",
-      location: "Eastside",
+      name: "David Adjei",
+      location: "Tema",
       text: "I've been ordering weekly subscriptions for 6 months now. The variety keeps me excited, and the quality is consistently amazing. Highly recommend!",
+      rating: 5,
+      image: "👨‍💻"
+    },
+    {
+      name: "Safety Technologies",
+      location: "Madina",
+      text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference. Thank you!",
+      rating: 5,
+      image: "👨‍💻"
+    },
+    {
+      name: "Mr Benjamin",
+      location: "Tema",
+      text: "Their juice is so irresistible that my family never lets me enjoy it alone. Even when I sneak a glass in secret, they somehow find out and come for theirs—leaving me with nothing! The taste is refreshingly different and always worth sharing… though I wish I didn’t have to!",
+      rating: 5,
+      image: "👨‍💻"
+    },
+    {
+      name: "Doctor Samuel",
+      location: "Ashaiman",
+      text: "I really enjoy Asana Juice! The taste is refreshingly unique, and every sip leaves me wanting more. It’s simply that good",
+      rating: 5,
+      image: "👨‍💻"
+    },
+    {
+      name: "Emily",
+      location: "Accra",
+      text: "Your juice is 100% on point—no one does it fresher! Keep juicing and keep shining.",
       rating: 5,
       image: "👨‍💻"
     }
