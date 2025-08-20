@@ -5,6 +5,8 @@ import cors from 'cors';
 import adminRoutes from './admin/routes/adminRoutes';
 import userRoutes from './user/routes/userRoutes';
 
+// ✅ Load environment variables from .env
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // ✅ Debug path resolution
 console.log('ENV CHECK →', {
@@ -13,13 +15,21 @@ console.log('ENV CHECK →', {
   PORT: process.env.PORT
 });
 
-
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+// ✅ CORS config — allow frontend domain
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "https://juicyplanet.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 
+// ✅ Routes
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 
@@ -28,5 +38,5 @@ app.get('/', (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`✅ Server is running at http://localhost:${PORT}`);
 });
