@@ -15,6 +15,8 @@ interface ContactInfo {
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true); // ✅ added
+  const [error, setError] = useState<string | null>(null); // ✅ added
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +29,7 @@ const Contact = () => {
 
     try {
       const res = await fetch(
-        `https://juicy-backend.onrender.com/user/contact`, // ✅ backend url from env
+        `https://juicy-backend.onrender.com/user/contact`, // ✅ backend url
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -48,17 +50,28 @@ const Contact = () => {
     }
   };
 
-useEffect(() => {
+  useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const response = await fetch("https://juicy-backend.onrender.com/user/contact-info"); // ⬅️ update with your backend URL
+        const response = await fetch(
+          "https://juicy-backend.onrender.com/user/contact-info"
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data: ContactInfo[] = await response.json();
 
-        // Assuming you only have one record in the table
-        setContactInfo(data[0]);
+        // ✅ transform DB format into your UI format
+        const transformed: ContactInfo = {
+          address: data.find((item) => item.type === "address")?.value || "",
+          phone: data
+            .filter((item) => item.type === "phone")
+            .map((p) => p.value),
+          email: data.find((item) => item.type === "email")?.value || "",
+        };
+
+        setContactInfo(transformed);
       } catch (err: any) {
         setError(err.message || "Failed to load contact info");
       } finally {
@@ -68,7 +81,6 @@ useEffect(() => {
 
     fetchContactInfo();
   }, []);
-
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -86,6 +98,11 @@ useEffect(() => {
           </p>
         </section>
 
+        {/* Show error */}
+        {error && (
+          <p className="text-center text-red-500 font-quicksand">{error}</p>
+        )}
+
         {/* Contact Info */}
         <section className="grid md:grid-cols-3 gap-6">
           <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
@@ -93,21 +110,23 @@ useEffect(() => {
               Address
             </h2>
             <p className="text-gray-600 font-quicksand">
-              {contactInfo?.address || "Loading..."}
+              {loading ? "Loading..." : contactInfo?.address || "Not available"}
             </p>
           </Card>
           <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
             <h2 className="text-xl font-raleway font-semibold text-juicy-green">
               Phone
             </h2>
-            {contactInfo?.phone?.length ? (
+            {loading ? (
+              <p className="text-gray-400 font-quicksand">Loading...</p>
+            ) : contactInfo?.phone?.length ? (
               contactInfo.phone.map((p, i) => (
                 <p key={i} className="text-gray-600 font-quicksand">
                   {p}
                 </p>
               ))
             ) : (
-              <p className="text-gray-400 font-quicksand">Loading...</p>
+              <p className="text-gray-400 font-quicksand">Not available</p>
             )}
           </Card>
           <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
@@ -115,7 +134,7 @@ useEffect(() => {
               Email
             </h2>
             <p className="text-gray-600 font-quicksand">
-              {contactInfo?.email || "Loading..."}
+              {loading ? "Loading..." : contactInfo?.email || "Not available"}
             </p>
           </Card>
         </section>
