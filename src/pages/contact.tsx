@@ -2,119 +2,90 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2, Phone, Mail, MapPin } from "lucide-react";
 
 interface ContactInfo {
+  id: string;
   address: string;
-  phone: string[];
+  phone: string[]; // stored as array in DB
   email: string;
 }
 
 const Contact = () => {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    address: "Tema, Golf-City, Ghana",
-    phone: ["+233 55 253 3635", "+233 26 860 3767"],
-    email: "hello@juicyplanet.com",
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = new FormData(e.target as HTMLFormElement);
-    const data = {
-      name: form.get("name"),
-      email: form.get("email"),
-      message: form.get("message"),
-    };
-
-    try {
-      const res = await fetch(`https://juicy-backend.onrender.com/user/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-      if (res.ok) {
-        toast.success(result.message || "Message sent successfully!");
-        (e.target as HTMLFormElement).reset();
-      } else {
-        toast.error(result.error || "Failed to send message.");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong.");
-    }
-  };
+  const [contactInfo, setContactInfo] = useState<ContactInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchContactInfo = async () => {
+    const fetchContact = async () => {
       try {
-        const res = await fetch(`https://juicy-backend.onrender.com/user/contact-info`);
+        const res = await fetch("/api/user/contact-info");
+        if (!res.ok) throw new Error("Failed to fetch contact info");
         const data = await res.json();
-        setContactInfo(data);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load contact info.");
+        setContactInfo(data || []);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchContactInfo();
+    fetchContact();
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="flex-1 py-16 px-4 sm:px-6 lg:px-8 container mx-auto max-w-5xl space-y-12 pt-[80px]">
-        {/* Heading */}
-        <section className="text-center space-y-2">
-          <h1 className="text-4xl font-raleway font-bold text-gray-800">Contact Us</h1>
-          <p className="text-gray-600 font-quicksand max-w-2xl mx-auto">
-            Have questions or want to collaborate? Reach out to us and we’ll get back to you as soon as we can.
-          </p>
-        </section>
+      <main className="flex-1 flex items-center justify-center px-6 py-12 bg-gray-50">
+        <div className="max-w-3xl w-full">
+          <h1 className="text-3xl font-bold mb-6 text-center">Contact Us</h1>
 
-        {/* Contact Info */}
-        <section className="grid md:grid-cols-3 gap-6">
-          <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
-            <h2 className="text-xl font-raleway font-semibold text-juicy-green">Address</h2>
-            <p className="text-gray-600 font-quicksand">{contactInfo.address}</p>
-          </Card>
-          <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
-            <h2 className="text-xl font-raleway font-semibold text-juicy-green">Phone</h2>
-            {contactInfo.phone.map((p, i) => (
-              <p key={i} className="text-gray-600 font-quicksand">{p}</p>
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
+            </div>
+          )}
+
+          {error && (
+            <p className="text-center text-red-500 font-medium">
+              {error}
+            </p>
+          )}
+
+          {!loading && !error && contactInfo.length === 0 && (
+            <p className="text-center text-gray-500">No contact info found.</p>
+          )}
+
+          {!loading &&
+            !error &&
+            contactInfo.map((info) => (
+              <Card key={info.id} className="mb-6 shadow-lg rounded-2xl">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-blue-600" />
+                    <p className="text-lg">{info.address}</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-5 h-5 text-green-600" />
+                    <div className="flex flex-col">
+                      {info.phone?.map((p, idx) => (
+                        <span key={idx} className="text-lg">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-red-600" />
+                    <p className="text-lg">{info.email}</p>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
-          </Card>
-          <Card className="p-6 border border-juicy-yellow/20 shadow-sm rounded-lg text-center space-y-2">
-            <h2 className="text-xl font-raleway font-semibold text-juicy-green">Email</h2>
-            <p className="text-gray-600 font-quicksand">{contactInfo.email}</p>
-          </Card>
-        </section>
-
-        {/* Contact Form */}
-        <section className="space-y-6 max-w-2xl mx-auto">
-          <h2 className="text-2xl font-raleway font-bold text-center text-gray-800">Send Us a Message</h2>
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <Input name="name" placeholder="Your Name" required className="font-quicksand w-full" />
-            <Input name="email" type="email" placeholder="Your Email" required className="font-quicksand w-full" />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              required
-              className="w-full border border-juicy-yellow/40 rounded-md p-3 font-quicksand text-sm text-gray-700 min-h-[120px]"
-            ></textarea>
-            <Button
-              type="submit"
-              className="w-full bg-juicy-yellow hover:bg-juicy-yellow-light text-gray-800 font-quicksand font-medium rounded-full shadow-md"
-            >
-              Send Message
-            </Button>
-          </form>
-        </section>
+        </div>
       </main>
 
       <Footer />
