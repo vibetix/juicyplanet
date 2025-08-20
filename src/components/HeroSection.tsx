@@ -67,15 +67,17 @@ useEffect(() => {
                 size="lg"
                 className="bg-juicy-yellow hover:bg-juicy-yellow-light text-gray-800 font-quicksand font-semibold text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
+                <Link to="/shop">
                 Shop Fresh Juices 🥤
+                </Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="border-juicy-green text-juicy-green hover:bg-juicy-green hover:text-white font-quicksand font-semibold text-lg px-8 py-6 rounded-full transition-all duration-300">
-              <a href="/about">
+              <Link to="/shop">
                 Learn Our Story
-              </a>
+              </Link>
               </Button>
             </div>
 
