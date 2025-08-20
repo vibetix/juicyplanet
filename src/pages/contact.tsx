@@ -20,7 +20,7 @@ const Contact = () => {
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const res = await fetch("/user/contact-info");
+        const res = await fetch("https://juicy-backend.onrender.com/user/contact-info");
         if (!res.ok) throw new Error("Failed to fetch contact info");
         const data = await res.json();
         setContactInfo(data || []);
