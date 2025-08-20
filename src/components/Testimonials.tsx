@@ -6,35 +6,7 @@ const Testimonials = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const testimonials = [
-    {
-      name: "Sarah Asamoah",
-      location: "Labadi",
-      text: "Juicy Planet has transformed my morning routine! The Glow-Up Greens juice gives me energy that lasts all day. I love knowing exactly what's in my juice.",
-      rating: 5,
-      image: "👩‍💼"
-    },
-    {
-      name: "Mike Frimpong",
-      location: "Michel camp",
-      text: "As a fitness enthusiast, I'm always looking for natural energy sources. The Sunrise Energy juice is perfect post-workout. Fresh, delicious, and no artificial stuff!",
-      rating: 5,
-      image: "🏃‍♂️"
-    },
-    {
-      name: "Emmanuella Wilson",
-      location: "Ashaiman",
-      text: "The Berry Bliss is my absolute favorite! It tastes like summer in a bottle. You can really taste the difference when it's made with love and quality ingredients.",
-      rating: 5,
-      image: "🌺"
-    },
-    {
-      name: "David Adjei",
-      location: "Tema",
-      text: "I've been ordering weekly subscriptions for 6 months now. The variety keeps me excited, and the quality is consistently amazing. Highly recommend!",
-      rating: 5,
-      image: "👨‍💻"
-    },
-    {
+   {
       name: "Safety Technologies",
       location: "Madina",
       text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference. Thank you!",
