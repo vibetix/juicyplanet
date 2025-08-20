@@ -39,28 +39,28 @@ const Testimonials = () => {
       location: "Madina",
       text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference. Thank you!",
       rating: 5,
-      image: "👨‍💻"
+      image: "👷‍♂️"
     },
     {
       name: "Mr Benjamin",
       location: "Tema",
       text: "Their juice is so irresistible that my family never lets me enjoy it alone. Even when I sneak a glass in secret, they somehow find out and come for theirs—leaving me with nothing! The taste is refreshingly different and always worth sharing… though I wish I didn’t have to!",
       rating: 5,
-      image: "👨‍💻"
+      image: "🤵"
     },
     {
       name: "Doctor Samuel",
       location: "Ashaiman",
       text: "I really enjoy Asana Juice! The taste is refreshingly unique, and every sip leaves me wanting more. It’s simply that good",
       rating: 5,
-      image: "👨‍💻"
+      image: "👨‍⚕️"
     },
     {
       name: "Emily",
       location: "Accra",
       text: "Your juice is 100% on point—no one does it fresher! Keep juicing and keep shining.",
       rating: 5,
-      image: "👨‍💻"
+      image: "😍"
     }
   ];
 
