@@ -393,8 +393,6 @@ const sendContactMessage = (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.error("❌ Error saving contact message:", error);
         return res.status(500).json({ error: "Failed to send message" });
     }
-    // Send notification email
-    yield (0, mailer_1.sendContactNotification)({ name, email, message });
     return res.json({ message: "Message sent successfully!" });
 });
 exports.sendContactMessage = sendContactMessage;
