@@ -1,57 +1,65 @@
-// src/pages/Testimonials.tsx
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Star, Trash2, Upload } from "lucide-react";
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Star, Upload, Trash2 } from 'lucide-react';
 
 interface Testimonial {
   id: number;
   name: string;
-  message: string;
-  rating: number;
+  text: string;
   image?: string;
+  rating: number;
 }
 
-export default function Testimonials() {
+const TestimonialPage = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([
     {
       id: 1,
-      name: "Sarah Johnson",
-      message:
-        "This platform completely changed how I manage my events. Super easy to use and very reliable!",
+      name: 'Ama K.',
+      text: 'This platform made my shopping so easy. Fast checkout and great support!',
+      image: 'https://randomuser.me/api/portraits/women/44.jpg',
       rating: 5,
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
     },
     {
       id: 2,
-      name: "Michael Lee",
-      message: "Great experience! My event ticket sales doubled in a week.",
+      name: 'Kwame O.',
+      text: 'I love the clean design and how simple it is to find what I need.',
+      image: 'https://randomuser.me/api/portraits/men/36.jpg',
       rating: 4,
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+    },
+    {
+      id: 3,
+      name: 'Akosua M.',
+      text: 'Absolutely amazing! I’ll definitely recommend this to all my friends.',
+      image: 'https://randomuser.me/api/portraits/women/65.jpg',
+      rating: 5,
     },
   ]);
 
   const [form, setForm] = useState({
-    name: "",
-    message: "",
-    rating: 0,
-    image: null as File | null,
-    imagePreview: "",
+    name: '',
+    text: '',
+    rating: 5,
+    imageFile: null as File | null,
+    imagePreview: '',
   });
 
-  const handleAddTestimonial = () => {
-    if (!form.name || !form.message || !form.rating) return;
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.text) return;
+
     const newTestimonial: Testimonial = {
-      id: Date.now(),
+      id: testimonials.length + 1,
       name: form.name,
-      message: form.message,
+      text: form.text,
+      image: form.imagePreview || 'https://via.placeholder.com/150',
       rating: form.rating,
-      image: form.imagePreview || undefined,
     };
+
     setTestimonials([...testimonials, newTestimonial]);
-    setForm({ name: "", message: "", rating: 0, image: null, imagePreview: "" });
+    setForm({ name: '', text: '', rating: 5, imageFile: null, imagePreview: '' });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,115 +67,161 @@ export default function Testimonials() {
       const file = e.target.files[0];
       setForm({
         ...form,
-        image: file,
+        imageFile: file,
         imagePreview: URL.createObjectURL(file),
       });
     }
   };
 
   const removeImage = () => {
-    setForm({ ...form, image: null, imagePreview: "" });
+    setForm({ ...form, imageFile: null, imagePreview: '' });
   };
 
-  return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-8">Testimonials</h1>
+  const renderStars = (rating: number) => (
+    <div className="flex justify-center gap-1 mb-3">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star
+          key={i}
+          className={`w-5 h-5 ${
+            i < rating ? 'fill-juicy-yellow text-juicy-yellow' : 'text-gray-300'
+          }`}
+        />
+      ))}
+    </div>
+  );
 
-      {/* Testimonials Grid */}
-      <div className="grid md:grid-cols-2 gap-6 mb-10">
-        {testimonials.map((t) => (
-          <Card key={t.id} className="shadow-lg rounded-2xl">
-            <CardContent className="flex flex-col items-center p-6 space-y-4">
-              <img
-                src={t.image || "https://via.placeholder.com/100"}
-                alt={t.name}
-                className="w-20 h-20 rounded-full object-cover shadow-md"
-              />
-              <h3 className="font-semibold text-lg">{t.name}</h3>
-              <p className="text-gray-600 text-center">{t.message}</p>
-              <div className="flex">
-                {Array.from({ length: 5 }).map((_, i) => (
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-juicy-yellow/10 via-white to-juicy-green/5">
+      <Header />
+
+      <main className="flex-1 py-16 px-4 sm:px-6 lg:px-8 container mx-auto pt-[80px]">
+        {/* Page Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-raleway font-extrabold text-gray-800 mb-4">
+            Hear From Our Happy Customers
+          </h1>
+          <p className="text-lg text-gray-600 font-quicksand max-w-2xl mx-auto">
+            We value every voice. Here’s what people are saying about their experience.
+          </p>
+        </div>
+
+        {/* Testimonials Grid */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-20">
+          {testimonials.map((t) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="relative bg-white border border-juicy-yellow/20 shadow-md rounded-2xl p-8 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300"
+            >
+              <div className="absolute -top-8">
+                <img
+                  src={t.image}
+                  alt={t.name}
+                  className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
+                />
+              </div>
+              <div className="mt-12">
+                {renderStars(t.rating)}
+                <p className="text-gray-600 font-quicksand italic mb-4 leading-relaxed">
+                  “{t.text}”
+                </p>
+                <span className="font-semibold text-gray-900 font-raleway text-lg block">
+                  {t.name}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Add Testimonial Form */}
+        <div className="max-w-2xl mx-auto bg-white/80 backdrop-blur-md p-10 rounded-2xl shadow-lg border border-juicy-yellow/30">
+          <h2 className="text-2xl font-raleway font-bold text-gray-800 mb-6 text-center">
+            Share Your Experience ✨
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-juicy-yellow font-quicksand"
+              required
+            />
+            <textarea
+              placeholder="Your Testimonial"
+              value={form.text}
+              onChange={(e) => setForm({ ...form, text: e.target.value })}
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-juicy-yellow font-quicksand"
+              rows={4}
+              required
+            />
+
+            {/* Image Upload Section */}
+            <div>
+              {form.imagePreview ? (
+                <div className="flex items-center gap-4">
+                  <img
+                    src={form.imagePreview}
+                    alt="Preview"
+                    className="w-16 h-16 rounded-full object-cover border border-gray-200 shadow"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={removeImage}
+                    className="flex items-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" /> Remove
+                  </Button>
+                </div>
+              ) : (
+                <label className="cursor-pointer flex items-center gap-2 bg-gray-100 px-4 py-3 rounded-xl border border-gray-300 shadow hover:bg-gray-200 transition">
+                  <Upload className="w-5 h-5 text-gray-600" />
+                  <span className="text-gray-700 font-quicksand">Upload Image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
+            </div>
+
+            {/* Rating Selector */}
+            <div className="flex items-center gap-2">
+              <span className="font-quicksand text-gray-700">Your Rating:</span>
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }, (_, i) => (
                   <Star
                     key={i}
-                    className={`w-5 h-5 ${
-                      i < t.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                    onClick={() => setForm({ ...form, rating: i + 1 })}
+                    className={`w-6 h-6 cursor-pointer transition-colors ${
+                      i < form.rating
+                        ? 'fill-juicy-yellow text-juicy-yellow'
+                        : 'text-gray-300 hover:text-juicy-yellow'
                     }`}
                   />
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
 
-      {/* Add Testimonial Form */}
-      <Card className="p-6 shadow-xl rounded-2xl">
-        <h2 className="text-xl font-semibold mb-4">Add Your Testimonial</h2>
-        <div className="space-y-4">
-          <Input
-            placeholder="Your Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-          <Textarea
-            placeholder="Write your experience..."
-            value={form.message}
-            onChange={(e) => setForm({ ...form, message: e.target.value })}
-          />
-
-          {/* Rating */}
-          <div className="flex items-center gap-2">
-            <span className="text-gray-700">Your Rating:</span>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                onClick={() => setForm({ ...form, rating: i + 1 })}
-                className={`w-6 h-6 cursor-pointer transition ${
-                  i < form.rating
-                    ? "text-yellow-400 fill-yellow-400"
-                    : "text-gray-300 hover:text-yellow-400"
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Image Upload Section */}
-          <div className="flex items-center gap-4">
-            {form.imagePreview ? (
-              <div className="flex items-center gap-3">
-                <img
-                  src={form.imagePreview}
-                  alt="Preview"
-                  className="w-16 h-16 rounded-full object-cover shadow-md"
-                />
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={removeImage}
-                  className="flex items-center gap-1"
-                >
-                  <Trash2 className="w-4 h-4" /> Remove
-                </Button>
-              </div>
-            ) : (
-              <label className="cursor-pointer flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg shadow hover:bg-gray-200 transition">
-                <Upload className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-700">Upload Image</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-              </label>
-            )}
-          </div>
-
-          <Button className="w-full" onClick={handleAddTestimonial}>
-            Submit Testimonial
-          </Button>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-juicy-yellow to-juicy-green text-gray-900 hover:opacity-90 transition-all font-quicksand font-semibold rounded-full shadow-md hover:shadow-lg py-3 text-lg"
+            >
+              Add Testimonial
+            </Button>
+          </form>
         </div>
-      </Card>
+      </main>
+
+      <Footer />
     </div>
   );
-}
+};
+
+export default TestimonialPage;
