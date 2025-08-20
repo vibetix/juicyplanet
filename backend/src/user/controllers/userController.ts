@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import supabase from '../utils/supabaseClient';
 import { signToken } from '../utils/jwt';
 import { generateToken } from '../utils/token';
-import { sendVerificationEmail,sendContactNotification } from '../utils/mailer';
+import { sendVerificationEmail } from '../utils/mailer';
 import crypto from 'crypto';
 import axios from 'axios';
 
@@ -436,8 +436,6 @@ export const sendContactMessage = async (req: Request, res: Response) => {
     console.error("❌ Error saving contact message:", error);
     return res.status(500).json({ error: "Failed to send message" });
   }
-   // Send notification email
-    await sendContactNotification({ name, email, message });
 
   return res.json({ message: "Message sent successfully!" });
 };
