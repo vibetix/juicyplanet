@@ -48,24 +48,27 @@ const Contact = () => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const res = await fetch(
-          `https://juicy-backend.onrender.com/user/contact-info` // ✅ backend url from env
-        );
-        const data = await res.json();
+        const response = await fetch("https://juicy-backend.onrender.com/user/contact-info"); // ⬅️ update with your backend URL
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: ContactInfo[] = await response.json();
 
-        // because Supabase returns an array of rows
+        // Assuming you only have one record in the table
         setContactInfo(data[0]);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load contact info.");
+      } catch (err: any) {
+        setError(err.message || "Failed to load contact info");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchContactInfo();
   }, []);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
