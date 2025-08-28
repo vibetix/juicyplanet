@@ -17,7 +17,6 @@ const CheckoutPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  
   const [paymentMethod, setPaymentMethod] = useState('mobile-money');
   const [mobileMoneyType, setMobileMoneyType] = useState('MTN');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,6 +25,8 @@ const CheckoutPage = () => {
   const [region, setRegion] = useState('');
   const [town, setTown] = useState('');
   const [orderCode, setOrderCode] = useState<string>('');
+  const [mobileMoneyNumber, setMobileMoneyNumber] = useState('');
+  const [cashOnDeliveryNumber, setCashOnDeliveryNumber] = useState('');
 
   const totalItems = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const deliveryFee =
@@ -55,9 +56,6 @@ const CheckoutPage = () => {
       return;
     }
     console.log("✅ User authenticated:", user?.email || "No email available");
-    
-    console.log('User is logged in');
-
     setShowPaymentModal(true); // show modal
   };
 
@@ -82,6 +80,12 @@ const CheckoutPage = () => {
             createdAt: new Date().toISOString(),
             trackingNumber: newTrackingNumber,
             trackingStatus: 'Pending',
+            paymentMethod,
+            mobileMoneyProvider: paymentMethod === 'mobile-money' ? mobileMoneyType : null,
+            mobileMoneyNumber: paymentMethod === 'mobile-money' ? mobileMoneyNumber : null,
+            cashOnDeliveryNumber: paymentMethod === 'cash' ? cashOnDeliveryNumber : null,
+            region,
+            town,
           })
         );
 
@@ -197,10 +201,10 @@ const CheckoutPage = () => {
                       <option value="AirtelTigo">AirtelTigo Money</option>*/}
                     </select>
 
-                    {/* Show the image/logo of the selected Mobile Money provider */}
-
                     <Input
                       placeholder="Mobile Money Number"
+                      value={mobileMoneyNumber}
+                      onChange={e => setMobileMoneyNumber(e.target.value)}
                       required
                       className="font-quicksand w-full mt-2"
                     />
@@ -229,7 +233,6 @@ const CheckoutPage = () => {
                     </div>
                   </>
                 )}
-
 
                 {paymentMethod === 'cash' && (
                   <>
@@ -283,14 +286,20 @@ const CheckoutPage = () => {
               </>
             ) : (
               <>
-                <p className="font-quicksand text-gray-800">
-                  We've sent a payment request to your {mobileMoneyType}. Please confirm on your phone.
-                </p>
+                {paymentMethod === 'mobile-money' ? (
+                  <p className="font-quicksand text-gray-800">
+                    We've sent a payment request to your {mobileMoneyType}. Please confirm on your phone.
+                  </p>
+                ) : (
+                  <p className="font-quicksand text-gray-800">
+                    Your cash on delivery order has been received. We will call you on {cashOnDeliveryNumber} to confirm delivery.
+                  </p>
+                )}
                 <Button
                   onClick={handleConfirmPayment}
                   className="bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
                 >
-                  Confirm Payment
+                  Confirm Order
                 </Button>
               </>
             )}
@@ -304,4 +313,3 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
-
