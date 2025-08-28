@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addOrder } from '@/store/ordersSlice';
@@ -21,12 +21,13 @@ const CheckoutPage = () => {
   const [mobileMoneyType, setMobileMoneyType] = useState('MTN');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showCashModal, setShowCashModal] = useState(false);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
-  const [region, setRegion] = useState('');
-  const [town, setTown] = useState('');
   const [orderCode, setOrderCode] = useState<string>('');
   const [mobileMoneyNumber, setMobileMoneyNumber] = useState('');
   const [cashOnDeliveryNumber, setCashOnDeliveryNumber] = useState('');
+  const [region, setRegion] = useState('');
+  const [town, setTown] = useState('');
 
   const totalItems = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const deliveryFee =
@@ -49,16 +50,19 @@ const CheckoutPage = () => {
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔐 Check auth before proceeding
     if (!isAuthenticated || !user) {
-      console.log("🔴 User not authenticated. Redirecting to login.");
-      navigate('/Login', { state: { from: '/Checkout' } }); // or show a toast
+      navigate('/Login', { state: { from: '/Checkout' } });
       return;
     }
-    console.log("✅ User authenticated:", user?.email || "No email available");
-    setShowPaymentModal(true); // show modal
+
+    if (paymentMethod === 'mobile-money') {
+      setShowPaymentModal(true);
+    } else if (paymentMethod === 'cash') {
+      setShowCashModal(true);
+    }
   };
 
+  // Mobile Money Payment Flow
   const handleConfirmPayment = async () => {
     setIsProcessing(true);
 
@@ -81,9 +85,8 @@ const CheckoutPage = () => {
             trackingNumber: newTrackingNumber,
             trackingStatus: 'Pending',
             paymentMethod,
-            mobileMoneyProvider: paymentMethod === 'mobile-money' ? mobileMoneyType : null,
-            mobileMoneyNumber: paymentMethod === 'mobile-money' ? mobileMoneyNumber : null,
-            cashOnDeliveryNumber: paymentMethod === 'cash' ? cashOnDeliveryNumber : null,
+            mobileMoneyProvider: mobileMoneyType,
+            mobileMoneyNumber,
             region,
             town,
           })
@@ -97,6 +100,43 @@ const CheckoutPage = () => {
 
         setTimeout(() => navigate('/Order'), 2000);
       }
+    } catch (error) {
+      setIsProcessing(false);
+      alert('Oops! Something went wrong. Please try again.');
+    }
+  };
+
+  // Cash on Delivery Flow
+  const handleConfirmCashOrder = async () => {
+    setIsProcessing(true);
+
+    try {
+      const newOrderCode = generateOrderCode();
+      const newTrackingNumber = generateTrackingNumber();
+
+      dispatch(
+        addOrder({
+          code: newOrderCode,
+          items,
+          total: grandTotal,
+          status: 'Pending',
+          createdAt: new Date().toISOString(),
+          trackingNumber: newTrackingNumber,
+          trackingStatus: 'Pending',
+          paymentMethod,
+          cashOnDeliveryNumber,
+          region,
+          town,
+        })
+      );
+
+      clearCart();
+
+      setIsProcessing(false);
+      setPaymentConfirmed(true);
+      setOrderCode(newOrderCode);
+
+      setTimeout(() => navigate('/Order'), 2000);
     } catch (error) {
       setIsProcessing(false);
       alert('Oops! Something went wrong. Please try again.');
@@ -269,7 +309,7 @@ const CheckoutPage = () => {
         )}
       </main>
 
-     {/* Modal */}
+      {/* Mobile Money Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center space-y-4">
@@ -286,17 +326,43 @@ const CheckoutPage = () => {
               </>
             ) : (
               <>
-                {paymentMethod === 'mobile-money' ? (
-                  <p className="font-quicksand text-gray-800">
-                    We've sent a payment request to your {mobileMoneyType}. Please confirm on your phone.
-                  </p>
-                ) : (
-                  <p className="font-quicksand text-gray-800">
-                    Your cash on delivery order has been received. We will call you on {cashOnDeliveryNumber} to confirm delivery.
-                  </p>
-                )}
+                <p className="font-quicksand text-gray-800">
+                  We've sent a payment request to your {mobileMoneyType}. Please confirm on your phone.
+                </p>
                 <Button
                   onClick={handleConfirmPayment}
+                  className="bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
+                >
+                  Confirm Payment
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Cash on Delivery Modal */}
+      {showCashModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center space-y-4">
+            {isProcessing ? (
+              <>
+                <p className="font-quicksand text-gray-800">Saving your order...</p>
+                <div className="animate-spin w-8 h-8 border-4 border-juicy-yellow border-t-transparent rounded-full mx-auto mt-2"></div>
+              </>
+            ) : paymentConfirmed ? (
+              <>
+                <h2 className="text-2xl font-raleway font-bold text-juicy-green">✅ Order Confirmed</h2>
+                <p className="font-quicksand text-gray-700 mt-2">Your cash on delivery order has been placed! 🎉</p>
+                <p className="font-quicksand text-sm text-gray-600 mt-2">Order code: <strong>{orderCode}</strong></p>
+              </>
+            ) : (
+              <>
+                <p className="font-quicksand text-gray-800">
+                  Please confirm your cash on delivery order. We will call you on {cashOnDeliveryNumber} to arrange delivery.
+                </p>
+                <Button
+                  onClick={handleConfirmCashOrder}
                   className="bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
                 >
                   Confirm Order
