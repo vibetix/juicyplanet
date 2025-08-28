@@ -19,13 +19,13 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    console.log("🔒 Checking ProtectedRoute");
+    // console.log("🔒 Checking ProtectedRoute");
 
     const storedUser = localStorage.getItem("auth_user");
     const token = localStorage.getItem("token");
 
-    console.log("LocalStorage user:", storedUser);
-    console.log("Redux auth state:", auth);
+    // console.log("LocalStorage user:", storedUser);
+    // console.log("Redux auth state:", auth);
 
     // Attempt to restore user session from localStorage
     if (!isAuthenticated && storedUser && token) {
@@ -33,7 +33,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
         const parsedUser = JSON.parse(storedUser);
         dispatch(login(parsedUser));
       } catch (err) {
-        console.warn("⚠️ Failed to parse stored user:", err);
+        // console.warn("⚠️ Failed to parse stored user:", err);
       }
     }
 
@@ -52,7 +52,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/" replace />;
   }
 
-  console.log("✅ User authenticated:", user.email);
+  // console.log("✅ User authenticated:", user.email);
   return <>{children}</>;
 };
 
