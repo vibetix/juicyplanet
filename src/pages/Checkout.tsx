@@ -179,7 +179,7 @@ const CheckoutPage = () => {
                   className="w-full border border-juicy-yellow/40 rounded-md p-2 font-quicksand text-sm text-gray-700"
                 >
                   <option value="mobile-money">Mobile Money</option>
-                  <option value="card">Credit/Debit Card</option>
+                  <option value="cash">Cash on Delivery</option>
                 </select>
 
                 {paymentMethod === 'mobile-money' && (
@@ -231,14 +231,18 @@ const CheckoutPage = () => {
                 )}
 
 
-                {paymentMethod === 'card' && (
+                {paymentMethod === 'cash' && (
                   <>
-                    <label className="text-sm font-quicksand text-gray-700 mt-2">Card Number:</label>
-                    <Input placeholder="Card Number" required className="font-quicksand w-full" />
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      <Input placeholder="Expiry (MM/YY)" required className="font-quicksand w-full" />
-                      <Input placeholder="CVV" required className="font-quicksand w-full" />
-                    </div>
+                    <label className="text-sm font-quicksand text-gray-700 mt-2">
+                      Your Phone Number:
+                    </label>
+                    <Input
+                      placeholder="Phone Number"
+                      value={cashOnDeliveryNumber}
+                      onChange={e => setCashOnDeliveryNumber(e.target.value)}
+                      required
+                      className="font-quicksand w-full mt-2"
+                    />
                   </>
                 )}
 
@@ -300,3 +304,4 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+
