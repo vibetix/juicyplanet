@@ -49,9 +49,12 @@ const CheckoutPage = () => {
 
     // 🔐 Check auth before proceeding
     if (!user) {
-      navigate('/Login', { state: { from: '/Checkout' } }); // or show a toast
+      console.log('User is not logged in');
+      // navigate('/Login', { state: { from: '/Checkout' } }); // or show a toast
       return;
     }
+    
+    console.log('User is logged in');
 
     setShowPaymentModal(true); // show modal
   };
