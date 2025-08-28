@@ -142,7 +142,8 @@ const Testimonials = () => {
             </Card>
           ))}
         </div>
-        <div className="text-center">
+      </div>
+      <div className="text-center">
           <Button
             variant="outline"
             size="lg"
@@ -151,7 +152,6 @@ const Testimonials = () => {
             <a href="/testimonials">View All Testimonials →</a>
           </Button>
         </div>
-      </div>
     </section>
   );
 };
