@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addOrder } from '@/store/ordersSlice';
 import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext'; // 👈 Added auth context
+import { useAppSelector } from "@/hooks/reduxHooks";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 
 const CheckoutPage = () => {
-  const { user } = useAuth(); // get current user
+  const auth = useAppSelector((state) => state.auth || { user: null, isAuthenticated: false });
+  const { isAuthenticated, user } = auth;
   const { items, clearCart } = useCart();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,11 +49,12 @@ const CheckoutPage = () => {
     e.preventDefault();
 
     // 🔐 Check auth before proceeding
-    if (!user) {
-      console.log('User is not logged in');
-      // navigate('/Login', { state: { from: '/Checkout' } }); // or show a toast
+    if (!isAuthenticated || !user) {
+      console.log("🔴 User not authenticated. Redirecting to login.");
+      navigate('/Login', { state: { from: '/Checkout' } }); // or show a toast
       return;
     }
+    console.log("✅ User authenticated:", user?.email || "No email available");
     
     console.log('User is logged in');
 
