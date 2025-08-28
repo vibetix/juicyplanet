@@ -147,6 +147,19 @@ const CheckoutPage = () => {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
+      {/* Custom button styles for hover effect */}
+      <style>
+        {`
+          .juicy-btn {
+            transition: background 0.2s, color 0.2s;
+          }
+          .juicy-btn:hover {
+            background-color: #22c55e; /* Tailwind's green-500 */
+            color: #fff !important;
+          }
+        `}
+      </style>
+
       <main className="flex-1 py-16 px-4 sm:px-6 lg:px-8 container mx-auto max-w-4xl pt-[60px]">
         <h1 className="text-3xl font-raleway font-bold text-gray-800 mb-8">Checkout</h1>
 
@@ -291,14 +304,14 @@ const CheckoutPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-juicy-yellow hover:bg-juicy-yellow-light text-gray-800 font-quicksand font-semibold rounded-full shadow-md"
+                  className="juicy-btn w-full bg-juicy-yellow text-gray-800 font-quicksand font-semibold rounded-full shadow-md"
                 >
                   Place Order
                 </Button>
 
                 <Button
                   variant="ghost"
-                  className="w-full text-juicy-green hover:underline mt-2 font-quicksand"
+                  className="juicy-btn w-full text-juicy-green mt-2 font-quicksand"
                   onClick={() => navigate('/Cart')}
                 >
                   Back to Cart
@@ -331,7 +344,7 @@ const CheckoutPage = () => {
                 </p>
                 <Button
                   onClick={handleConfirmPayment}
-                  className="bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
+                  className="juicy-btn bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
                 >
                   Confirm Payment
                 </Button>
@@ -363,7 +376,7 @@ const CheckoutPage = () => {
                 </p>
                 <Button
                   onClick={handleConfirmCashOrder}
-                  className="bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
+                  className="juicy-btn bg-juicy-yellow text-gray-800 font-quicksand font-medium px-6 py-2 rounded-full mt-2"
                 >
                   Confirm Order
                 </Button>
