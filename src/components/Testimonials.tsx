@@ -36,13 +36,6 @@ const Testimonials = () => {
       text: "I really enjoy Asana Juice! The taste is refreshingly unique, and every sip leaves me wanting more. It’s simply that good",
       image: 'https://randomuser.me/api/portraits/men/65.jpg',
       rating: 5,
-    },
-    {
-      id: 4,
-      name: "Emily",
-      text: "Your juice is 100% on point—no one does it fresher! Keep juicing and keep shining.",
-      image: 'https://randomuser.me/api/portraits/women/65.jpg',
-      rating: 5,
     }
   ]);
 
