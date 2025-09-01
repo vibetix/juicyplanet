@@ -17,25 +17,32 @@ const TestimonialPage = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([
     {
       id: 1,
-      name: 'Ama K.',
-      text: 'This platform made my shopping so easy. Fast checkout and great support!',
-      image: 'https://randomuser.me/api/portraits/women/44.jpg',
+      name: "Safety Technologies",
+      text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference.The taste, the difference indeed. Thank you!",
+      image: 'https://randomuser.me/api/portraits/men/44.jpg',
       rating: 5,
     },
     {
       id: 2,
-      name: 'Kwame O.',
-      text: 'I love the clean design and how simple it is to find what I need.',
+      name: "Mr Benjamin",
+      text: "Their juice is so irresistible that my family never lets me enjoy it alone. Even when I sneak a glass in secret, they somehow find out and come for theirs—leaving me with nothing! The taste is refreshingly different and always worth sharing… though I wish I didn’t have to!",
       image: 'https://randomuser.me/api/portraits/men/36.jpg',
-      rating: 4,
+      rating: 5,
     },
     {
       id: 3,
-      name: 'Akosua M.',
-      text: 'Absolutely amazing! I’ll definitely recommend this to all my friends.',
-      image: 'https://randomuser.me/api/portraits/women/65.jpg',
+      name: "Doctor Samuel",
+      text: "I really enjoy Asana Juice! The taste is refreshingly unique, and every sip leaves me wanting more. It’s simply that good",
+      image: 'https://randomuser.me/api/portraits/men/65.jpg',
       rating: 5,
     },
+    {
+      id: 4,
+       name: "Emily",
+      text: "Your juice is 100% on point—no one does it fresher! Keep juicing and keep shining.",
+      image: 'https://randomuser.me/api/portraits/women/65.jpg',
+      rating: 5,
+    }
   ]);
 
   const [form, setForm] = useState({
