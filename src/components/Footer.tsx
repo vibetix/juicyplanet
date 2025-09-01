@@ -1,21 +1,11 @@
-import { 
-  Facebook,
-  Instagram,
-  Twitter,
-  Mail,
-  Phone,
-  MapPin,
-  CreditCard,
-  Smartphone,
-  Wallet,
-} from "lucide-react";
-import { SiTiktok } from "react-icons/si";
+
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, CreditCard, Smartphone, Wallet } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
           <div className="space-y-6">
             <div className="flex items-center space-x-2">
@@ -27,46 +17,24 @@ const Footer = () => {
               </h3>
             </div>
             <p className="text-gray-400 font-quicksand leading-relaxed">
-              Handcrafted juices made with love, passion, and the finest natural
-              ingredients. Nourishing your body, one sip at a time.
+              Handcrafted juices made with love, passion, and the finest natural ingredients. Nourishing your body, one sip at a time.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="w-10 h-10 bg-juicy-yellow/20 rounded-full flex items-center justify-center hover:bg-juicy-yellow/30 transition-colors"
-              >
+              <a href="#" className="w-10 h-10 bg-juicy-yellow/20 rounded-full flex items-center justify-center hover:bg-juicy-yellow/30 transition-colors">
                 <Facebook className="w-5 h-5 text-juicy-yellow" />
               </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="w-10 h-10 bg-juicy-green/20 rounded-full flex items-center justify-center hover:bg-juicy-green/30 transition-colors"
-              >
+              <a href="#" className="w-10 h-10 bg-juicy-green/20 rounded-full flex items-center justify-center hover:bg-juicy-green/30 transition-colors">
                 <Instagram className="w-5 h-5 text-juicy-green" />
               </a>
-              <a
-                href="#"
-                aria-label="Twitter"
-                className="w-10 h-10 bg-juicy-red/20 rounded-full flex items-center justify-center hover:bg-juicy-red/30 transition-colors"
-              >
+              <a href="#" className="w-10 h-10 bg-juicy-red/20 rounded-full flex items-center justify-center hover:bg-juicy-red/30 transition-colors">
                 <Twitter className="w-5 h-5 text-juicy-red" />
-              </a>
-              <a
-                href="#"
-                aria-label="TikTok"
-                className="w-10 h-10 bg-gray-700/30 rounded-full flex items-center justify-center hover:bg-gray-600/50 transition-colors group"
-              >
-                <SiTiktok className="w-5 h-5 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#25F4EE] group-hover:to-[#FE2C55]" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">
-              Quick Links
-            </h4>
+            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">Quick Links</h4>
             <ul className="space-y-3">
               <li><a href="/" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Home</a></li>
               <li><a href="/shop" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Shop Juices</a></li>
@@ -78,9 +46,7 @@ const Footer = () => {
 
           {/* Customer Care */}
           <div>
-            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">
-              Customer Care
-            </h4>
+            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">Customer Care</h4>
             <ul className="space-y-3">
               <li><a href="/faq" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">FAQ</a></li>
               <li><a href="/delivery" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Delivery Info</a></li>
@@ -92,41 +58,21 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">
-              Get In Touch
-            </h4>
+            <h4 className="text-lg font-raleway font-semibold mb-6 text-juicy-yellow">Get In Touch</h4>
             <div className="space-y-4">
-              {/* Phone Numbers */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-juicy-green" />
-                  </div>
-                  <span className="text-gray-400 font-quicksand">
-                    (+233) 26 860 3767
-                  </span>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-juicy-green" />
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-juicy-green" />
-                  </div>
-                  <span className="text-gray-400 font-quicksand">
-                    (+233) 55 253 3635
-                  </span>
-                </div>
+                <span className="text-gray-400 font-quicksand">(+233) 26 860 3767 </span><br/>
+                <span className="text-gray-400 font-quicksand">(+233) 55 253 3635 </span>
               </div>
-
-              {/* Email */}
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
                   <Mail className="w-4 h-4 text-juicy-green" />
                 </div>
-                <span className="text-gray-400 font-quicksand">
-                  hello@juicyplanet.com
-                </span>
+                <span className="text-gray-400 font-quicksand">hello@juicyplanet.com</span>
               </div>
-
-              {/* Address */}
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center mt-1">
                   <MapPin className="w-4 h-4 text-juicy-green" />
@@ -142,14 +88,11 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 font-quicksand text-sm text-center md:text-left">
-              © {new Date().getFullYear()} Juicy Planet. All rights reserved.
-              Made with 💚 for your health.
+            <p className="text-gray-400 font-quicksand text-sm">
+              © 2024 Juicy Planet. All rights reserved. Made with 💚 for your health.
             </p>
             <div className="flex items-center space-x-6">
-              <span className="text-sm text-gray-400 font-quicksand">
-                We accept:
-              </span>
+              <span className="text-sm text-gray-400 font-quicksand">We accept:</span>
               <div className="flex space-x-2">
                 <div className="w-8 h-6 bg-juicy-yellow/20 rounded flex items-center justify-center">
                   <CreditCard className="w-4 h-4 text-juicy-yellow" />
