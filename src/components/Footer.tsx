@@ -1,4 +1,4 @@
-import {
+import { 
   Facebook,
   Instagram,
   Twitter,
@@ -68,46 +68,11 @@ const Footer = () => {
               Quick Links
             </h4>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="/"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/shop"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Shop Juices
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/about"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  About Chef
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/subscription"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Subscriptions
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/contact"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Contact Us
-                </a>
-              </li>
+              <li><a href="/" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Home</a></li>
+              <li><a href="/shop" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Shop Juices</a></li>
+              <li><a href="/about" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">About Chef</a></li>
+              <li><a href="/subscription" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Subscriptions</a></li>
+              <li><a href="/contact" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Contact Us</a></li>
             </ul>
           </div>
 
@@ -117,46 +82,11 @@ const Footer = () => {
               Customer Care
             </h4>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="/faq"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/delivery"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Delivery Info
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/returns"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Returns
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/privacy"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/terms"
-                  className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand"
-                >
-                  Terms of Service
-                </a>
-              </li>
+              <li><a href="/faq" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">FAQ</a></li>
+              <li><a href="/delivery" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Delivery Info</a></li>
+              <li><a href="/returns" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Returns</a></li>
+              <li><a href="/privacy" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-gray-400 hover:text-juicy-green transition-colors font-quicksand">Terms of Service</a></li>
             </ul>
           </div>
 
