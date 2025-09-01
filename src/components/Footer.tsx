@@ -28,6 +28,9 @@ const Footer = () => {
               <a href="#" className="w-10 h-10 bg-juicy-red/20 rounded-full flex items-center justify-center hover:bg-juicy-red/30 transition-colors">
                 <Twitter className="w-5 h-5 text-juicy-red" />
               </a>
+              <a href="#" className="w-10 h-10 bg-juicy-red/20 rounded-full flex items-center justify-center hover:bg-juicy-green/30 transition-colors">
+                <Tiktok className="w-5 h-5 text-juicy-red" />
+              </a>
             </div>
           </div>
 
