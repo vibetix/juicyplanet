@@ -1,13 +1,13 @@
-import { 
-  Facebook, 
-  Instagram, 
-  Twitter, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  CreditCard, 
-  Smartphone, 
-  Wallet 
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard,
+  Smartphone,
+  Wallet,
 } from "lucide-react";
 import { SiTiktok } from "react-icons/si";
 
@@ -55,9 +55,9 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="TikTok"
-                className="w-10 h-10 bg-gray-700/30 rounded-full flex items-center justify-center hover:bg-gray-600/50 transition-colors"
+                className="w-10 h-10 bg-gray-700/30 rounded-full flex items-center justify-center hover:bg-gray-600/50 transition-colors group"
               >
-                <SiTiktok className="w-5 h-5 text-white" />
+                <SiTiktok className="w-5 h-5 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#25F4EE] group-hover:to-[#FE2C55]" />
               </a>
             </div>
           </div>
@@ -166,7 +166,8 @@ const Footer = () => {
               Get In Touch
             </h4>
             <div className="space-y-4">
-              <div className="flex flex-col space-y-2">
+              {/* Phone Numbers */}
+              <div className="space-y-2">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
                     <Phone className="w-4 h-4 text-juicy-green" />
@@ -184,6 +185,8 @@ const Footer = () => {
                   </span>
                 </div>
               </div>
+
+              {/* Email */}
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center">
                   <Mail className="w-4 h-4 text-juicy-green" />
@@ -192,6 +195,8 @@ const Footer = () => {
                   hello@juicyplanet.com
                 </span>
               </div>
+
+              {/* Address */}
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-juicy-green/20 rounded-full flex items-center justify-center mt-1">
                   <MapPin className="w-4 h-4 text-juicy-green" />
@@ -208,8 +213,8 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 font-quicksand text-sm text-center md:text-left">
-              © 2024 Juicy Planet. All rights reserved. Made with 💚 for your
-              health.
+              © {new Date().getFullYear()} Juicy Planet. All rights reserved.
+              Made with 💚 for your health.
             </p>
             <div className="flex items-center space-x-6">
               <span className="text-sm text-gray-400 font-quicksand">
