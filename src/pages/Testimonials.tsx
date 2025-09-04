@@ -1,9 +1,11 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Upload, Trash2 } from 'lucide-react';
+import axios from 'axios';
+import { supabase } from '@/supabaseClient';
 
 interface Testimonial {
   id: number;
@@ -11,40 +13,11 @@ interface Testimonial {
   text: string;
   image?: string;
   rating: number;
+  user_id?: string;
 }
 
 const TestimonialPage = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
-    {
-      id: 1,
-      name: "Safety Technologies",
-      text: "Their spring rolls taste amazing! I accidentally left them out of the fridge for a whole day, yet they were still in great condition. The flavor truly stands out—there’s definitely a difference.The taste, the difference indeed. Thank you!",
-      image: 'https://randomuser.me/api/portraits/men/44.jpg',
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Mr Benjamin",
-      text: "Their juice is so irresistible that my family never lets me enjoy it alone. Even when I sneak a glass in secret, they somehow find out and come for theirs—leaving me with nothing! The taste is refreshingly different and always worth sharing… though I wish I didn’t have to!",
-      image: 'https://randomuser.me/api/portraits/men/36.jpg',
-      rating: 5,
-    },
-    {
-      id: 3,
-      name: "Doctor Samuel",
-      text: "I really enjoy Asana Juice! The taste is refreshingly unique, and every sip leaves me wanting more. It’s simply that good",
-      image: 'https://randomuser.me/api/portraits/men/65.jpg',
-      rating: 5,
-    },
-    {
-      id: 4,
-       name: "Emily",
-      text: "Your juice is 100% on point—no one does it fresher! Keep juicing and keep shining.",
-      image: 'https://randomuser.me/api/portraits/women/65.jpg',
-      rating: 5,
-    }
-  ]);
-
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [form, setForm] = useState({
     name: '',
     text: '',
@@ -52,36 +25,87 @@ const TestimonialPage = () => {
     imageFile: null as File | null,
     imagePreview: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.text) return;
-
-    const newTestimonial: Testimonial = {
-      id: testimonials.length + 1,
-      name: form.name,
-      text: form.text,
-      image: form.imagePreview || 'https://via.placeholder.com/150',
-      rating: form.rating,
-    };
-
-    setTestimonials([...testimonials, newTestimonial]);
-    setForm({ name: '', text: '', rating: 5, imageFile: null, imagePreview: '' });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setForm({
-        ...form,
-        imageFile: file,
-        imagePreview: URL.createObjectURL(file),
-      });
+  // Fetch testimonials from backend
+  const fetchTestimonials = async () => {
+    try {
+      const res = await axios.get('https://juicy-backend.onrender.com/user/get-testimonials');
+      setTestimonials(res.data);
+    } catch (err) {
+      console.error('Error fetching testimonials:', err);
     }
   };
 
-  const removeImage = () => {
-    setForm({ ...form, imageFile: null, imagePreview: '' });
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const file = e.target.files[0];
+      setForm({ ...form, imageFile: file, imagePreview: URL.createObjectURL(file) });
+    }
+  };
+
+  const removeImage = () => setForm({ ...form, imageFile: null, imagePreview: '' });
+  // Helper function to filter explicit words
+const profanityFilter = (text: string) => {
+  // Define a simple list of profane words (extendable)
+  const profaneWords = ['damn', 'darn', 'hell', 'crap', 'shit', 'fuck']; 
+  const regex = new RegExp(`\\b(${profaneWords.join('|')})\\b`, 'gi');
+
+  return text.replace(regex, (word) => word[0] + '***');
+};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.text) return;
+
+    setLoading(true);
+    try {
+      const user = supabase.auth.user();
+      if (!user) throw new Error('User not authenticated');
+
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+
+      const res = await axios.post(
+        'https://juicy-backend.onrender.com/user/add-testimonial',
+        {
+          name: form.name,
+          text: form.text,
+          rating: form.rating,
+          image: form.imagePreview || 'https://via.placeholder.com/150',
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setTestimonials([res.data, ...testimonials]);
+      setForm({ name: '', text: '', rating: 5, imageFile: null, imagePreview: '' });
+    } catch (err) {
+      console.error('Error adding testimonial:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this testimonial?')) return;
+
+    try {
+      const user = supabase.auth.user();
+      if (!user) throw new Error('User not authenticated');
+
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+
+      await axios.delete(`https://juicy-backend.onrender.com/user/get-testimonials/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setTestimonials(testimonials.filter((t) => t.id !== id));
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Cannot delete testimonial: only the owner can delete it.');
+    }
   };
 
   const renderStars = (rating: number) => (
@@ -89,9 +113,7 @@ const TestimonialPage = () => {
       {Array.from({ length: 5 }, (_, i) => (
         <Star
           key={i}
-          className={`w-5 h-5 ${
-            i < rating ? 'fill-juicy-yellow text-juicy-yellow' : 'text-gray-300'
-          }`}
+          className={`w-5 h-5 ${i < rating ? 'fill-juicy-yellow text-juicy-yellow' : 'text-gray-300'}`}
         />
       ))}
     </div>
@@ -100,9 +122,7 @@ const TestimonialPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-juicy-yellow/10 via-white to-juicy-green/5">
       <Header />
-
       <main className="flex-1 py-16 px-4 sm:px-6 lg:px-8 container mx-auto pt-[80px]">
-        {/* Page Title */}
         <div className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-raleway font-extrabold text-gray-800 mb-4">
             Hear From Our Happy Customers
@@ -124,19 +144,27 @@ const TestimonialPage = () => {
             >
               <div className="absolute -top-8">
                 <img
-                  src={t.image}
+                  src={t.image || 'https://via.placeholder.com/150'}
                   alt={t.name}
                   className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
                 />
               </div>
               <div className="mt-12">
                 {renderStars(t.rating)}
-                <p className="text-gray-600 font-quicksand italic mb-4 leading-relaxed">
-                  “{t.text}”
-                </p>
-                <span className="font-semibold text-gray-900 font-raleway text-lg block">
-                  {t.name}
-                </span>
+                <p className="text-gray-600 font-quicksand italic mb-4 leading-relaxed">“{t.text}”</p>
+                <span className="font-semibold text-gray-900 font-raleway text-lg block">{t.name}</span>
+
+                {/* Delete button only for owner */}
+                {t.user_id === supabase.auth.user()?.id && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="mt-3 flex items-center gap-2"
+                    onClick={() => handleDelete(t.id)}
+                  >
+                    <Trash2 className="w-4 h-4" /> Delete
+                  </Button>
+                )}
               </div>
             </motion.div>
           ))}
@@ -165,7 +193,7 @@ const TestimonialPage = () => {
               required
             />
 
-            {/* Image Upload Section */}
+            {/* Image Upload */}
             <div>
               {form.imagePreview ? (
                 <div className="flex items-center gap-4">
@@ -188,12 +216,7 @@ const TestimonialPage = () => {
                 <label className="cursor-pointer flex items-center gap-2 bg-gray-100 px-4 py-3 rounded-xl border border-gray-300 shadow hover:bg-gray-200 transition">
                   <Upload className="w-5 h-5 text-gray-600" />
                   <span className="text-gray-700 font-quicksand">Upload Image</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
               )}
             </div>
@@ -207,9 +230,7 @@ const TestimonialPage = () => {
                     key={i}
                     onClick={() => setForm({ ...form, rating: i + 1 })}
                     className={`w-6 h-6 cursor-pointer transition-colors ${
-                      i < form.rating
-                        ? 'fill-juicy-yellow text-juicy-yellow'
-                        : 'text-gray-300 hover:text-juicy-yellow'
+                      i < form.rating ? 'fill-juicy-yellow text-juicy-yellow' : 'text-gray-300 hover:text-juicy-yellow'
                     }`}
                   />
                 ))}
@@ -219,8 +240,9 @@ const TestimonialPage = () => {
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-juicy-yellow to-juicy-green text-gray-900 hover:opacity-90 transition-all font-quicksand font-semibold rounded-full shadow-md hover:shadow-lg py-3 text-lg"
+              disabled={loading}
             >
-              Add Testimonial
+              {loading ? 'Submitting...' : 'Add Testimonial'}
             </Button>
           </form>
         </div>
