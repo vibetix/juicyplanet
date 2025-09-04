@@ -31,17 +31,18 @@ router.post('/register', registerUser);
 // User login route
 router.post('/login', loginUser);
 
-//send email token
-router.post('/send-verification-email', sendVerificationEmailController);
+// ✅ Send OTP
+router.post('/send-verification-otp', sendVerificationEmailController);
 
-//resend email token
-router.post('/resend-email', resendEmailController);
+// ✅ Resend OTP
+router.post('/resend-otp', resendEmailController);
 
-// ✅ Verify email route (GET /verify-email?token=...)
-router.get('/verify-email/:token', verifyEmail);
+// ✅ Verify OTP (instead of token in URL, use in body)
+router.post('/verify-otp', verifyEmail);
 
-// check verification
+// ✅ Check verification status
 router.post('/check-verification', checkVerificationStatus);
+
 
 
 
