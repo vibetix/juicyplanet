@@ -14,13 +14,13 @@ const router = express_1.default.Router();
 router.post('/register', userController_1.registerUser);
 // User login route
 router.post('/login', userController_1.loginUser);
-//send email token
-router.post('/send-verification-email', userController_1.sendVerificationEmailController);
-//resend email token
-router.post('/resend-email', userController_1.resendEmailController);
-// ✅ Verify email route (GET /verify-email?token=...)
-router.get('/verify-email/:token', userController_1.verifyEmail);
-// check verification
+// ✅ Send OTP
+router.post('/send-verification-otp', userController_1.sendVerificationEmailController);
+// ✅ Resend OTP
+router.post('/resend-otp', userController_1.resendEmailController);
+// ✅ Verify OTP (instead of token in URL, use in body)
+router.post('/verify-otp', userController_1.verifyEmail);
+// ✅ Check verification status
 router.post('/check-verification', userController_1.checkVerificationStatus);
 // =======================
 // 🔐 Protected User Routes
