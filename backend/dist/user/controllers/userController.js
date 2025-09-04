@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
+exports.deleteTestimonial = exports.addTestimonial = exports.getTestimonials = exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
@@ -515,3 +515,78 @@ const sendContactMessage = (req, res) => __awaiter(void 0, void 0, void 0, funct
     return res.json({ message: "Message sent successfully!" });
 });
 exports.sendContactMessage = sendContactMessage;
+// Get all testimonials
+const getTestimonials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { data, error } = yield supabaseClient_1.default
+            .from('testimonials')
+            .select('*');
+        if (error)
+            throw error;
+        res.json(data);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+exports.getTestimonials = getTestimonials;
+// Add testimonial
+const addTestimonial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, text, image, rating } = req.body;
+    const user = req.user;
+    if (!name || !text || !rating) {
+        return res.status(400).json({ error: 'Name, text, and rating are required' });
+    }
+    const newTestimonial = {
+        name,
+        text,
+        image,
+        rating,
+        user_id: user.id,
+    };
+    try {
+        const { data, error } = yield supabaseClient_1.default
+            .from('testimonials')
+            .insert(newTestimonial)
+            .select()
+            .single();
+        if (error)
+            throw error;
+        res.status(201).json(data);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+exports.addTestimonial = addTestimonial;
+// Delete testimonial
+const deleteTestimonial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const user = req.user;
+    try {
+        const { data: testimonial, error: fetchError } = yield supabaseClient_1.default
+            .from('testimonials')
+            .select('*')
+            .eq('id', id)
+            .single();
+        if (fetchError || !testimonial) {
+            return res.status(404).json({ error: 'Testimonial not found' });
+        }
+        if (testimonial.user_id !== user.id) {
+            return res.status(403).json({ error: 'You can only delete your own testimonial' });
+        }
+        const { data, error } = yield supabaseClient_1.default
+            .from('testimonials')
+            .delete()
+            .eq('id', id)
+            .select()
+            .single();
+        if (error)
+            throw error;
+        res.json({ message: 'Testimonial deleted', testimonial: data });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+exports.deleteTestimonial = deleteTestimonial;

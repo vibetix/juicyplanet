@@ -60,7 +60,7 @@ const sendVerificationEmail = (_a) => __awaiter(void 0, [_a], void 0, function* 
           <!-- Footer -->
           <div style="background-color: #FFF0DC; padding: 20px; text-align: center; font-size: 13px; color: #888888;">
             <p style="margin: 0;">© ${new Date().getFullYear()} JuicyPlanet. All rights reserved.</p>
-            <p style="margin: 5px 0 0;">Stay juicy 🍊</p>
+            <p style="margin: 5px 0 0;">The Taste, The Difference.</p>
           </div>
         </div>
       </div>
