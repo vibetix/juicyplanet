@@ -580,3 +580,101 @@ export const sendContactMessage = async (req: Request, res: Response) => {
   return res.json({ message: "Message sent successfully!" });
 };
 
+interface Testimonial {
+  id: number;
+  name: string;
+  text: string;
+  image?: string;
+  rating: number;
+  user_id?: string;
+  created_at?: string;
+}
+
+// Type for inserting (id is optional because it will be generated)
+interface InsertTestimonial {
+  name: string;
+  text: string;
+  image?: string;
+  rating: number;
+  user_id?: string;
+}
+
+// Get all testimonials
+export const getTestimonials = async (req: Request, res: Response) => {
+  try {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*') as unknown as { data: Testimonial[]; error: any };
+
+    if (error) throw error;
+
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Add testimonial
+export const addTestimonial = async (req: Request, res: Response) => {
+  const { name, text, image, rating } = req.body;
+  const user = (req as any).user;
+
+  if (!name || !text || !rating) {
+    return res.status(400).json({ error: 'Name, text, and rating are required' });
+  }
+
+  const newTestimonial: InsertTestimonial = {
+    name,
+    text,
+    image,
+    rating,
+    user_id: user.id,
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .insert(newTestimonial)
+      .select()
+      .single() as { data: Testimonial; error: any };
+
+    if (error) throw error;
+    res.status(201).json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Delete testimonial
+export const deleteTestimonial = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = (req as any).user;
+
+  try {
+    const { data: testimonial, error: fetchError } = await supabase
+      .from('testimonials')
+      .select('*')
+      .eq('id', id)
+      .single() as { data: Testimonial; error: any };
+
+    if (fetchError || !testimonial) {
+      return res.status(404).json({ error: 'Testimonial not found' });
+    }
+
+    if (testimonial.user_id !== user.id) {
+      return res.status(403).json({ error: 'You can only delete your own testimonial' });
+    }
+
+    const { data, error } = await supabase
+      .from('testimonials')
+      .delete()
+      .eq('id', id)
+      .select()
+      .single() as { data: Testimonial; error: any };
+
+    if (error) throw error;
+    res.json({ message: 'Testimonial deleted', testimonial: data });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};

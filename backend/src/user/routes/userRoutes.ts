@@ -11,7 +11,10 @@ import {
   getProductBySlug,
   initiateMoMoPayment,
   getContactInfo,
-  sendContactMessage 
+  sendContactMessage,
+  getTestimonials, 
+  addTestimonial, 
+  deleteTestimonial
 } from '../controllers/userController'; 
 
 import {
@@ -43,7 +46,11 @@ router.post('/verify-otp', verifyEmail);
 // ✅ Check verification status
 router.post('/check-verification', checkVerificationStatus);
 
+router.post('/get-testimonials', getTestimonials);
 
+router.post('/add-testimonial', addTestimonial);
+
+router.post('/delete-testimonial/:id', deleteTestimonial);
 
 
 // =======================
