@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Upload, Trash2 } from 'lucide-react';
 import axios from 'axios';
-import { supabase } from '@/supabaseClient';
+import supabase  from "@/lib/supabaseClient";
 
 interface Testimonial {
   id: number;
