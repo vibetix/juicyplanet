@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userController_1 = require("../controllers/userController");
 const UserAuthMiddleware_1 = require("../middleware/UserAuthMiddleware");
+const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
 const router = express_1.default.Router();
 // =======================
 // 🔓 Public User Routes
@@ -38,4 +40,16 @@ router.get('/product/:slug', userController_1.getProductBySlug);
 router.post('/checkout', userController_1.initiateMoMoPayment);
 router.get('/contact-info', userController_1.getContactInfo);
 router.post("/contact", userController_1.sendContactMessage);
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path_1.default.join(__dirname, '../public/images'));
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = path_1.default.extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`);
+    },
+});
+const upload = (0, multer_1.default)({ storage });
+router.post('/upload-image', upload.single('image'), userController_1.uploadImageController);
 exports.default = router;

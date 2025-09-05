@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTestimonial = exports.addTestimonial = exports.getTestimonials = exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
+exports.uploadImageController = exports.deleteTestimonial = exports.addTestimonial = exports.getTestimonials = exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
@@ -22,7 +22,6 @@ const axios_1 = __importDefault(require("axios"));
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, username, phone } = req.body;
-    // 🛑 Validate input
     if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });
     }
@@ -38,7 +37,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (existingUser) {
             return res.status(409).json({ error: "User already exists" });
         }
-        // 🔐 Hash the password
+        // 🔐 Hash password
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         // ➕ Insert new user
         const { data: newUser, error: insertError } = yield supabaseClient_1.default
@@ -57,29 +56,34 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             .single();
         if (insertError)
             throw insertError;
+        if (!newUser) {
+            return res.status(500).json({ error: "User creation failed" });
+        }
         // 🔑 Generate OTP
         const otp = generateOTP();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 mins
-        // 💾 Save OTP to email_tokens
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+        // 💾 Save OTP
         const { error: otpError } = yield supabaseClient_1.default
             .from("email_tokens")
             .insert([
             {
                 user_id: newUser.id,
-                token: otp, // storing OTP in the token column
+                token: otp,
                 expires_at: expiresAt,
             },
         ]);
         if (otpError)
-            throw new Error("Failed to save OTP");
-        // 🍪 Set pendingVerification cookie (for hybrid auto-login after verification)
+            throw otpError;
+        // 📧 Send OTP email
+        yield (0, mailer_1.sendVerificationEmail)({ email, token: otp });
+        // 🍪 Cookie for pending verification
         res.cookie("pendingVerification", newUser.id, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 15 * 60 * 1000, // match OTP expiry (15 mins)
+            maxAge: 15 * 60 * 1000,
         });
-        // ✅ Respond to client
+        // ✅ Final response
         return res.status(201).json({
             success: true,
             message: "User registered successfully. Please check your email for the OTP to verify your account.",
@@ -590,3 +594,11 @@ const deleteTestimonial = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.deleteTestimonial = deleteTestimonial;
+const uploadImageController = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const imageUrl = `/images/${req.file.filename}`;
+    return res.json({ url: imageUrl });
+};
+exports.uploadImageController = uploadImageController;

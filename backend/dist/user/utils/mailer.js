@@ -38,7 +38,7 @@ const sendVerificationEmail = (_a) => __awaiter(void 0, [_a], void 0, function* 
           <div style="background: linear-gradient(135deg, #FFD54F, #FFF3C2); color: #00C896; padding: 30px 20px; text-align: center;">
             <span style="font-size: 42px;">🧃</span>
             <h1 style="margin: 0; font-size: 28px;">JuicyPlanet</h1>
-            <p style="margin: 10px 0 0; font-size: 16px;">Fresh. Fruity. Feel-Good 🍹</p>
+            <p style="margin: 10px 0 0; font-size: 16px;">The Taste, The Difference 🍹</p>
           </div>
 
           <!-- Body -->
