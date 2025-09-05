@@ -14,7 +14,6 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 export const registerUser = async (req: Request, res: Response) => {
   const { email, password, username, phone } = req.body;
 
-  // 🛑 Validate input
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
@@ -28,12 +27,11 @@ export const registerUser = async (req: Request, res: Response) => {
       .maybeSingle();
 
     if (userCheckError) throw userCheckError;
-
     if (existingUser) {
       return res.status(409).json({ error: "User already exists" });
     }
 
-    // 🔐 Hash the password
+    // 🔐 Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // ➕ Insert new user
@@ -53,34 +51,39 @@ export const registerUser = async (req: Request, res: Response) => {
       .single();
 
     if (insertError) throw insertError;
+    if (!newUser) {
+      return res.status(500).json({ error: "User creation failed" });
+    }
 
     // 🔑 Generate OTP
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 mins
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
-    // 💾 Save OTP to email_tokens
+    // 💾 Save OTP
     const { error: otpError } = await supabase
       .from("email_tokens")
       .insert([
         {
           user_id: newUser.id,
-          token: otp, // storing OTP in the token column
+          token: otp,
           expires_at: expiresAt,
         },
       ]);
 
-    if (otpError) throw new Error("Failed to save OTP");
+    if (otpError) throw otpError;
 
+    // 📧 Send OTP email
+    await sendVerificationEmail({ email, token: otp });
 
-    // 🍪 Set pendingVerification cookie (for hybrid auto-login after verification)
+    // 🍪 Cookie for pending verification
     res.cookie("pendingVerification", newUser.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 15 * 60 * 1000, // match OTP expiry (15 mins)
+      maxAge: 15 * 60 * 1000,
     });
 
-    // ✅ Respond to client
+    // ✅ Final response
     return res.status(201).json({
       success: true,
       message:
@@ -93,6 +96,7 @@ export const registerUser = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 export const sendVerificationEmailController = async (req: Request, res: Response) => {
   const { user_id, email } = req.body;
@@ -677,4 +681,12 @@ export const deleteTestimonial = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
+};
+
+export const uploadImageController = (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  const imageUrl = `/images/${req.file.filename}`;
+  return res.json({ url: imageUrl });
 };
