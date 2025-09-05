@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadImageController = exports.deleteTestimonial = exports.addTestimonial = exports.getTestimonials = exports.sendContactMessage = exports.getContactInfo = exports.initiateMoMoPayment = exports.getProductBySlug = exports.getAllProducts = exports.getUserProfile = exports.loginUser = exports.resendEmailController = exports.verifyEmail = exports.checkVerificationStatus = exports.sendVerificationEmailController = exports.registerUser = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
 const mailer_1 = require("../utils/mailer");
@@ -38,7 +38,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(409).json({ error: "User already exists" });
         }
         // 🔐 Hash password
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
         // ➕ Insert new user
         const { data: newUser, error: insertError } = yield supabaseClient_1.default
             .from("users")
@@ -298,7 +298,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json({ message: "User not found" });
         }
         // 2. Check password
-        const isValid = yield bcrypt_1.default.compare(password, user.password);
+        const isValid = yield bcryptjs_1.default.compare(password, user.password);
         if (!isValid) {
             return res.status(401).json({ message: "Incorrect password" });
         }
