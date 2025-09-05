@@ -50,43 +50,48 @@ const TestimonialPage = () => {
 
   const removeImage = () => setForm({ ...form, imageFile: null, imagePreview: '' });
   // Helper function to filter explicit words
-const profanityFilter = (text: string) => {
-  // Define a simple list of profane words (extendable)
-  const profaneWords = ['damn', 'darn', 'hell', 'crap', 'shit', 'fuck']; 
-  const regex = new RegExp(`\\b(${profaneWords.join('|')})\\b`, 'gi');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!form.name || !form.text) return;
+  setLoading(true);
 
-  return text.replace(regex, (word) => word[0] + '***');
-};
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.text) return;
+  try {
+    const user = supabase.auth.user();
+    if (!user) throw new Error('User not authenticated');
+    const token = (await supabase.auth.getSession()).data.session?.access_token;
 
-    setLoading(true);
-    try {
-      const user = supabase.auth.user();
-      if (!user) throw new Error('User not authenticated');
+    let imageUrl = 'https://via.placeholder.com/150';
+    if (form.imageFile) {
+      const formData = new FormData();
+      formData.append('image', form.imageFile);
 
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-
-      const res = await axios.post(
-        'https://juicy-backend.onrender.com/user/add-testimonial',
-        {
-          name: form.name,
-          text: form.text,
-          rating: form.rating,
-          image: form.imagePreview || 'https://via.placeholder.com/150',
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const imgRes = await axios.post(
+        'https://juicy-backend.onrender.com/user/upload-image', // You need to make this endpoint
+        formData,
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
       );
-
-      setTestimonials([res.data, ...testimonials]);
-      setForm({ name: '', text: '', rating: 5, imageFile: null, imagePreview: '' });
-    } catch (err) {
-      console.error('Error adding testimonial:', err);
-    } finally {
-      setLoading(false);
+      imageUrl = imgRes.data.url; // Ensure backend returns the image URL
     }
-  };
+
+    const res = await axios.post(
+      'https://juicy-backend.onrender.com/user/add-testimonial',
+      {
+        name: form.name,
+        text: profanityFilter(form.text),
+        rating: form.rating,
+        image: imageUrl,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setTestimonials([res.data, ...testimonials]);
+    setForm({ name: '', text: '', rating: 5, imageFile: null, imagePreview: '' });
+  } catch (err) {
+    console.error('Error adding testimonial:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this testimonial?')) return;
@@ -97,7 +102,7 @@ const profanityFilter = (text: string) => {
 
       const token = (await supabase.auth.getSession()).data.session?.access_token;
 
-      await axios.delete(`https://juicy-backend.onrender.com/user/get-testimonials/${id}`, {
+      await axios.delete(`https://juicy-backend.onrender.com/user/delete-testimonial/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
