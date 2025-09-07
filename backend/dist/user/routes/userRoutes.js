@@ -24,9 +24,9 @@ router.post('/resend-otp', userController_1.resendEmailController);
 router.post('/verify-otp', userController_1.verifyEmail);
 // ✅ Check verification status
 router.post('/check-verification', userController_1.checkVerificationStatus);
-router.post('/get-testimonials', userController_1.getTestimonials);
-router.post('/add-testimonial', userController_1.addTestimonial);
-router.post('/delete-testimonial/:id', userController_1.deleteTestimonial);
+router.get('/testimonials', userController_1.getTestimonials);
+router.post('/testimonial', userController_1.addTestimonial);
+router.delete('/delete-testimonial/:id', userController_1.deleteTestimonial);
 // =======================
 // 🔐 Protected User Routes
 // =======================
