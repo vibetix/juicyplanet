@@ -50,11 +50,11 @@ router.post('/verify-otp', verifyEmail);
 // ✅ Check verification status
 router.post('/check-verification', checkVerificationStatus);
 
-router.post('/get-testimonials', getTestimonials);
+router.get('/testimonials', getTestimonials);
 
-router.post('/add-testimonial', addTestimonial);
+router.post('/testimonial', addTestimonial);
 
-router.post('/delete-testimonial/:id', deleteTestimonial);
+router.delete('/delete-testimonial/:id', deleteTestimonial);
 
 
 // =======================
