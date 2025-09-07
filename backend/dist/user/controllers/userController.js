@@ -523,18 +523,18 @@ exports.sendContactMessage = sendContactMessage;
 const getTestimonials = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { data, error } = yield supabaseClient_1.default
-            .from("testimonials")
-            .select("*");
-        if (error) {
-            console.error("❌ Supabase error while fetching testimonials:", error);
+            .from('testimonials')
+            .select('id, name, text, image, rating, created_at')
+            .order('created_at', { ascending: false }); // newest first
+        if (error)
             throw error;
-        }
-        // 🔎 Debug log
-        console.log("✅ Testimonials fetched from DB:", data);
-        res.json(data);
+        res.status(200).json({
+            success: true,
+            count: (data === null || data === void 0 ? void 0 : data.length) || 0,
+            testimonials: data,
+        });
     }
     catch (err) {
-        console.error("❌ Unexpected error in getTestimonials:", err.message);
         res.status(500).json({ error: err.message });
     }
 });
