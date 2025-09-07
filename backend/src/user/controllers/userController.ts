@@ -607,20 +607,18 @@ interface InsertTestimonial {
 export const getTestimonials = async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
-      .from("testimonials")
-      .select("*") as unknown as { data: Testimonial[]; error: any };
+      .from('testimonials')
+      .select('id, name, text, image, rating, created_at')
+      .order('created_at', { ascending: false }); // newest first
 
-    if (error) {
-      console.error("❌ Supabase error while fetching testimonials:", error);
-      throw error;
-    }
+    if (error) throw error;
 
-    // 🔎 Debug log
-    console.log("✅ Testimonials fetched from DB:", data);
-
-    res.json(data);
+    res.status(200).json({
+      success: true,
+      count: data?.length || 0,
+      testimonials: data,
+    });
   } catch (err: any) {
-    console.error("❌ Unexpected error in getTestimonials:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
