@@ -30,7 +30,7 @@ const TestimonialPage = () => {
   // Fetch testimonials from backend
   const fetchTestimonials = async () => {
     try {
-      const res = await axios.get('https://juicy-backend.onrender.com/user/get-testimonials');
+      const res = await axios.get('https://juicy-backend.onrender.com/user/testimonials');
       setTestimonials(res.data);
     } catch (err) {
       console.error('Error fetching testimonials:', err);
@@ -74,7 +74,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     const res = await axios.post(
-      'https://juicy-backend.onrender.com/user/add-testimonial',
+      'https://juicy-backend.onrender.com/user/testimonial',
       {
         name: form.name,
         text: profanityFilter(form.text),

@@ -66,14 +66,7 @@ const onSubmit = async (values: FormData) => {
     // After successful registration
       localStorage.setItem("registeredEmail", email);
       localStorage.setItem("registeredUserId", user_id); // Add this
-
-    // ✅ Send verification email
-    await fetch("https://juicy-backend.onrender.com/user/send-verification-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, user_id }), // Now it's correctly passed
-    });
-
+      
     // ✅ Redirect
     navigate("/check-email", { state: { email } });
 
