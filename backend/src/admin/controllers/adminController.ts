@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import supabase from '../utils/supabaseClient';
 import { signToken } from '../utils/jwt';
 
