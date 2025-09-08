@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAdminProfile = exports.loginAdmin = exports.registerAdmin = void 0;
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const supabaseClient_1 = __importDefault(require("../utils/supabaseClient"));
 const jwt_1 = require("../utils/jwt");
 // Register a new admin
@@ -33,7 +33,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (existingUser) {
             return res.status(409).json({ error: 'User already exists' });
         }
-        const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const { error: insertError } = yield supabaseClient_1.default.from('users').insert([
             {
                 email,
@@ -69,7 +69,7 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!user) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
-        const match = yield bcryptjs_1.default.compare(password, user.password);
+        const match = yield bcrypt_1.default.compare(password, user.password);
         if (!match) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
