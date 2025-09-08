@@ -11,13 +11,20 @@ import {
   getProductBySlug,
   initiateMoMoPayment,
   getContactInfo,
-  sendContactMessage 
+  sendContactMessage,
+  getTestimonials, 
+  addTestimonial, 
+  deleteTestimonial,
+  uploadImageController
 } from '../controllers/userController'; 
 
 import {
   authenticateToken,
   requireUser,
 } from '../middleware/UserAuthMiddleware';
+import multer from 'multer';
+import path from 'path';
+
 
 const router = express.Router();
 
@@ -31,18 +38,23 @@ router.post('/register', registerUser);
 // User login route
 router.post('/login', loginUser);
 
-//send email token
-router.post('/send-verification-email', sendVerificationEmailController);
+// ✅ Send OTP
+router.post('/send-verification-otp', sendVerificationEmailController);
 
-//resend email token
-router.post('/resend-email', resendEmailController);
+// ✅ Resend OTP
+router.post('/resend-otp', resendEmailController);
 
-// ✅ Verify email route (GET /verify-email?token=...)
-router.get('/verify-email/:token', verifyEmail);
+// ✅ Verify OTP (instead of token in URL, use in body)
+router.post('/verify-otp', verifyEmail);
 
-// check verification
+// ✅ Check verification status
 router.post('/check-verification', checkVerificationStatus);
 
+router.get('/testimonials', getTestimonials);
+
+router.post('/testimonial', addTestimonial);
+
+router.delete('/delete-testimonial/:id', deleteTestimonial);
 
 
 // =======================
@@ -63,5 +75,20 @@ router.post('/checkout', initiateMoMoPayment);
 
 router.get('/contact-info', getContactInfo);
 router.post("/contact", sendContactMessage);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../public/images'));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `${uniqueSuffix}${ext}`);
+  },
+});
+
+const upload = multer({ storage });
+
+router.post('/upload-image', upload.single('image'), uploadImageController);
 
 export default router;
